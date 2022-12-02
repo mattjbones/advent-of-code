@@ -36,7 +36,7 @@ pub fn run() -> Result<()> {
         total += per_elf_total;
     }
 
-    println!("biggest total: {:}, {:?}", total, totals);
+    println!("biggest total: {:}, {:?}\n", total, totals);
 
     Ok(())
 }
