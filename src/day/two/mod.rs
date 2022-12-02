@@ -130,10 +130,6 @@ pub fn run() -> Result<()> {
                 let challenger_move = Play::new(split.next().unwrap());
                 let target_result = RoundResult::new(split.next().unwrap());
                 let player_move = challenger_move.target_move(&target_result);
-                // println!(
-                //     "{:?}\t{:?}={:?}\n",
-                //     challenger_move, target_result, player_move
-                // );
                 total += player_move.round_result(&challenger_move).unwrap();
             }
         }
