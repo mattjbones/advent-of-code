@@ -65,6 +65,7 @@ pub fn run() -> Result<(), Error> {
                         .collect();
                     if letters.len() == 2 {
                         matched = letters[0].unwrap();
+                        break;
                     }
                 }
 
