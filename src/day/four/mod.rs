@@ -1,6 +1,6 @@
 use std::{
     io::{Error, ErrorKind},
-    ops::{RangeBounds, RangeInclusive},
+    ops::RangeInclusive,
 };
 
 #[derive(Debug)]
@@ -35,7 +35,7 @@ pub fn run() -> Result<(), Error> {
     println!("Day 3");
 
     {
-        println!("Part 1");
+        println!("Part 1 / 2");
         let mut total = 0;
         for line in include_str!("input").lines() {
             let pair: Vec<Cleaner> = line
