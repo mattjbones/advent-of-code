@@ -36,12 +36,6 @@ impl Stack {
 
     pub fn put(&mut self, container: Option<Container>) {
         self.put_many(Vec::from([container]));
-        // let empty_space = self.0.iter().position(|item| item.is_none());
-        // if let Some(empty_index) = empty_space {
-        //     self.0.insert(empty_index, container);
-        // } else {
-        //     self.0.push(container);
-        // }
     }
 
     pub fn put_many(&mut self, mut containers: Vec<Option<Container>>) {

@@ -1,4 +1,4 @@
-#![feature(iter_array_chunks)]
+#![feature(iter_next_chunk)]
 
 pub mod day;
 
@@ -8,5 +8,6 @@ fn main() {
     // day::two::run().unwrap();
     // day::three::run().unwrap();
     // day::four::run().unwrap();
-    day::five::run();
+    // day::five::run();
+    day::six::run().unwrap();
 }
