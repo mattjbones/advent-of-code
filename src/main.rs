@@ -9,5 +9,6 @@ fn main() {
     // day::three::run().unwrap();
     // day::four::run().unwrap();
     // day::five::run();
-    day::six::run().unwrap();
+    // day::six::run().unwrap();
+    day::seven::run();
 }
