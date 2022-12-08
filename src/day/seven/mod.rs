@@ -81,6 +81,7 @@ pub fn run() {
                         current_dir = match path {
                             "/" => "/",
                             ".." => {
+                                let mut new_parent = "";
                                 if let Some(dir) = root.find_dir(&current_dir) {
                                     if let Some(parent) = &dir.parent {
                                         println!("current: {current_dir}");
@@ -90,9 +91,9 @@ pub fn run() {
                                         //I want to assign a copy of the string (so I can find the dir again later)
                                         //I should just copy a reference to the current node.
 
-                                        // &parent.path.clone()
+                                        new_parent = &parent.path.clone()
 
-                                        println!("parent: {}", parent.path);
+                                        // println!("parent: {}", parent.path);
 
                                         // pr
                                     } else {
@@ -101,7 +102,8 @@ pub fn run() {
                                 } else {
                                     panic!("cannot find match");
                                 }
-                                panic!("up! \n{:#?}", root);
+                                new_parent
+                                // panic!("up! \n{:#?}", root);
                             }
                             _ => {
                                 if current_dir == "/" {
