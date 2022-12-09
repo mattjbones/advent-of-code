@@ -76,7 +76,8 @@ function calculateDirTotals(rootNode){
     }
     totalWalker(rootNode);
 
-    console.log({totals});
+    totals.sort()
+    console.log(JSON.stringify(totals));
     return totals
 }
 
@@ -92,6 +93,7 @@ function findDirToDelet(data) {
     const totals = calculateDirTotals(root);
     const usedSpace = root.nodeTotal;
     const free = TOTAL_SPACE - usedSpace;
+    console.log({free});
     const target = totals.filter(total => total + free > MIN_UNUSED_SPACE).sort()[0]
     console.log({target});
 
@@ -136,5 +138,5 @@ fs.readFile('input','utf8', (err, data) => {
         return
     }
     findDirToDelet(data);
-    console.log("prev: non");
+    console.log("prev: 12390492");
 });
