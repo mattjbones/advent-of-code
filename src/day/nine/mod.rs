@@ -1,161 +1,25 @@
-use std::fmt;
-use std::io::{Error, ErrorKind};
+use std::collections::HashSet;
 
-#[derive(Debug, PartialEq, Clone)]
-struct Position {
-    row: usize,
-    col: usize,
-}
-
-impl Position {
-    fn new(row: usize, col: usize) -> Self {
-        Self { row, col }
-    }
-
-    fn is_start_position(&self, start_position: &Position) -> bool {
-        if self == start_position {
-            true
-        } else {
-            false
-        }
-    }
-
-    fn distance_between_points(&self, another: &Position) -> usize {
-        (((self.row as i8 - another.row as i8).pow(2) + (another.col as i8 - self.col as i8).pow(2))
-            as f32)
-            .sqrt() as usize
-    }
-}
-
-#[derive(Debug, Clone)]
-enum PositionItem {
-    Start,
-    Head,
-    Tail,
-    Both,
-    Neither,
-    Visited,
-}
-
-impl TryFrom<char> for PositionItem {
-    type Error = std::io::Error;
-
-    fn try_from(value: char) -> Result<Self, Self::Error> {
-        let value_string = value.to_string();
-        let value_str = value_string.as_str();
-        match value_str {
-            "." => Ok(PositionItem::Neither),
-            "s" => Ok(PositionItem::Start),
-            "H" => Ok(PositionItem::Head),
-            "T" => Ok(PositionItem::Tail),
-            val => {
-                println!("unknown {val}");
-                Err(Error::from(ErrorKind::Unsupported))
-            }
-        }
-    }
-}
-
-struct PrettyGrid<'a>(&'a Grid);
-fn print_grid(grid: &Grid) {
-    println!("{:?}", PrettyGrid(grid));
-}
-
-impl fmt::Debug for PrettyGrid<'_> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        for row in self.0.iter() {
-            let mut both_row = false;
-            for pos in row {
-                let pos = match pos {
-                    PositionItem::Both => {
-                        both_row = true;
-                        "H"
-                    }
-                    PositionItem::Head => "H",
-                    PositionItem::Neither => ".",
-                    PositionItem::Tail => "T",
-                    PositionItem::Start => "s",
-                    PositionItem::Visited => "#",
-                };
-                write!(f, "{pos}")?;
-            }
-            if both_row {
-                write!(f, " (Both)")?;
-            }
-            write!(f, "\n")?;
-        }
-
-        Ok(())
-    }
-}
-
-impl PositionItem {
-    fn is_head(&self) -> bool {
-        match self {
-            PositionItem::Head => true,
-            PositionItem::Both => true,
-            _ => false,
-        }
-    }
-
-    fn is_visited(&self) -> bool {
-        match self {
-            PositionItem::Visited => true,
-            _ => false,
-        }
-    }
-}
-
-type Grid = Vec<Vec<PositionItem>>;
 type Instructions = Vec<(String, usize)>;
 
-fn build_grid_from_input_string(input: &str) -> Result<Grid, Error> {
-    let mut grid: Grid = Vec::new();
-    for (i, line) in input.lines().enumerate() {
-        if line == "" {
-            break;
-        }
-
-        if grid.get(i).is_none() {
-            grid.push(Vec::new());
-        }
-
-        for (char_index, char) in line.chars().enumerate() {
-            if char == ' ' {
-                let meta = line
-                    .split_at(char_index + 2)
-                    .1
-                    .replace("(", "")
-                    .replace(")", "")
-                    .replace(",", "");
-                let parts: Vec<&str> = meta.split(" ").collect();
-                if parts[0] != "H" {
-                    break;
-                }
-
-                //as Head moves we don't care about anything else
-                let head_pos = grid[i].iter().position(|item| item.is_head()).unwrap();
-                grid[i][head_pos] = PositionItem::Both;
-                break;
-            } else {
-                let position = PositionItem::try_from(char)?;
-                grid[i].push(position);
-            }
-        }
-    }
-    Ok(grid)
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+struct Location {
+    x: i32,
+    y: i32,
 }
 
-fn build_grid_from_max_input(length: usize) -> Grid {
-    let mut grid = Vec::new();
-    for _ in 0..length + 1 {
-        let mut row = Vec::new();
-        for _ in 0..length + 1 {
-            row.push(PositionItem::Neither);
-        }
-        grid.push(row)
+impl Location {
+    fn new(x: i32, y: i32) -> Self {
+        Self { x, y }
     }
-    grid
+
+    fn from((x, y): (i32, i32)) -> Self {
+        Self { x, y }
+    }
+}
+
+fn distance_between_points(first: &Location, second: &Location) -> usize {
+    (((first.x - second.x).pow(2) + (first.y - second.y).pow(2)) as f32).sqrt() as usize
 }
 
 fn build_instructions_from_input_string(input: &str) -> Instructions {
@@ -172,226 +36,257 @@ fn build_instructions_from_input_string(input: &str) -> Instructions {
         .collect()
 }
 
-fn get_updated_items(
-    item: &PositionItem,
-    current: &PositionItem,
-    is_start_position: bool,
-    skip_tail_trace: bool,
-) -> (PositionItem, PositionItem) {
-    let new_item = match item {
-        //we move head out of tail
-        PositionItem::Both => PositionItem::Head,
-        PositionItem::Head => {
-            if current.is_head() {
-                PositionItem::Both
-            } else {
-                PositionItem::Head
-            }
-        }
-        item => item.clone(),
+fn move_horizontal(item: &Location, inc: bool) -> Location {
+    if inc {
+        Location::from((item.x + 1, item.y))
+    } else {
+        Location::from((item.x - 1, item.y))
+    }
+}
+
+fn move_vertical(item: &Location, inc: bool) -> Location {
+    if inc {
+        Location::from((item.x, item.y + 1))
+    } else {
+        Location::from((item.x, item.y - 1))
+    }
+}
+
+fn execute_instruction(
+    dir: &str,
+    head: &Location,
+    tail: &Location,
+    tail_locs: &mut HashSet<Location>,
+) -> (Location, Option<Location>) {
+    let mut new_tail = None;
+
+    let new_head = match dir {
+        "R" => move_horizontal(&head, true),
+        "L" => move_horizontal(&head, false),
+        "U" => move_vertical(&head, true),
+        "D" => move_vertical(&head, false),
+        _ => panic!("no"),
     };
 
-    let after_move = match item {
-        PositionItem::Head => PositionItem::Neither,
-        PositionItem::Both => PositionItem::Tail,
-        PositionItem::Tail => {
-            if is_start_position {
-                PositionItem::Start
-            } else {
-                PositionItem::Neither
-            }
-        }
-        item => panic!("don't care {item:?}"),
-    };
-
-    (new_item, after_move)
-}
-
-fn move_in_column(
-    grid: &mut Grid,
-    item_position: &Position,
-    is_start_position: bool,
-    inc: bool,
-    skip_tail_trace: bool,
-) -> Position {
-    // if !inc && item_position.row as i8 - 1 < 0
-    //     || inc && item_position.row as i8 + 1 > (grid.len()) as i8
-    // {
-    //     println!("Move in col");
-    //     println!("{item_position:?} {inc}");
-    //     panic!("cannot move out of grid");
-    // }
-
-    let move_amount: isize = if inc { 1 } else { -1 };
-    let new_pos: usize = (item_position.row as isize + move_amount) as usize;
-
-    let item = &grid[item_position.row][item_position.col];
-    let target_position_item = &grid[new_pos][item_position.col];
-    // let (new_item, after_move) = get_updated_items(
-    //     item,
-    //     target_position_item,
-    //     is_start_position,
-    //     skip_tail_trace,
-    // );
-    // grid[new_pos][item_position.col] = new_item;
-    // grid[item_position.row][item_position.col] = after_move;
-    Position::new(new_pos, item_position.col)
-}
-
-fn move_in_row(
-    grid: &mut Grid,
-    item_position: &Position,
-    is_start_position: bool,
-    inc: bool,
-    skip_tail_trace: bool,
-) -> Position {
-    // if inc && item_position.col + 1 > grid[item_position.row].len()
-    //     || !inc && item_position.col as i8 - 1 < 0
-    // {
-    //     println!("Move in row");
-    //     println!("{item_position:?} {inc}");
-    //     panic!("cannot move out of grid");
-    // }
-
-    let move_amount: isize = if inc { 1 } else { -1 };
-    let new_pos: usize = (item_position.col as isize + move_amount) as usize;
-
-    let item = &grid[item_position.row][item_position.col];
-    let target_position_item = &grid[item_position.row][new_pos];
-    // let (new_item, after_move) = get_updated_items(
-    //     item,
-    //     target_position_item,
-    //     is_start_position,
-    //     skip_tail_trace,
-    // );
-    // grid[item_position.row][new_pos] = new_item;
-    // grid[item_position.row][item_position.col] = after_move;
-    Position::new(item_position.row, new_pos)
-}
-
-fn apply_instructions_to_grid(
-    grid: &mut Grid,
-    instructions: &Instructions,
-    start_position: Position,
-) {
-    let mut head_position: Position = Position::new(grid.len() - 1, 0);
-    let mut tail_position: Position = Position::new(grid.len() - 1, 0);
-    let mut tail_positions = Vec::new();
-    for (dir, times) in instructions {
-        // println!("== {dir} {times} ==\n");
-        for _ in 0..*times {
-            //move H in dir
-            let is_head_at_start = head_position.is_start_position(&start_position);
-            let new_head_position = match dir.as_str() {
-                "U" => move_in_column(grid, &head_position, is_head_at_start, false, false),
-                "D" => move_in_column(grid, &head_position, is_head_at_start, true, false),
-                "L" => move_in_row(grid, &head_position, is_head_at_start, false, false),
-                "R" => move_in_row(grid, &head_position, is_head_at_start, true, false),
-                _ => panic!("unknown"),
-            };
-            head_position = new_head_position;
-
-            // check if we need move tail
-            let head_tail_diff = head_position.distance_between_points(&tail_position);
-            if head_tail_diff > 1 {
-                let is_tail_at_start = tail_position.is_start_position(&start_position);
-                let new_tail_position = match dir.as_str() {
-                    "U" => {
-                        if tail_position.col != head_position.col {
-                            let sub_tail_move = move_in_row(
-                                grid,
-                                &tail_position,
-                                is_tail_at_start,
-                                (head_position.col as i8 - tail_position.col as i8) > 0,
-                                false,
-                            );
-                            move_in_column(grid, &sub_tail_move, is_tail_at_start, false, true)
-                        } else {
-                            move_in_column(grid, &tail_position, is_tail_at_start, false, false)
-                        }
-                    }
-                    "D" => {
-                        if tail_position.col != head_position.col {
-                            let sub_tail_move = move_in_row(
-                                grid,
-                                &tail_position,
-                                is_tail_at_start,
-                                (head_position.col as i8 - tail_position.col as i8) > 0,
-                                false,
-                            );
-                            move_in_column(grid, &sub_tail_move, is_tail_at_start, true, true)
-                        } else {
-                            move_in_column(grid, &tail_position, is_tail_at_start, true, false)
-                        }
-                    }
-                    "L" => {
-                        if tail_position.row != head_position.row {
-                            let sub_tail_move = move_in_column(
-                                grid,
-                                &tail_position,
-                                is_tail_at_start,
-                                (head_position.row as i8 - tail_position.row as i8) > 0,
-                                false,
-                            );
-                            move_in_row(grid, &sub_tail_move, is_tail_at_start, false, true)
-                        } else {
-                            move_in_row(grid, &tail_position, is_tail_at_start, false, false)
-                        }
-                    }
-                    "R" => {
-                        if tail_position.row != head_position.row {
-                            let sub_tail_move = move_in_column(
-                                grid,
-                                &tail_position,
-                                is_tail_at_start,
-                                (head_position.row as i8 - tail_position.row as i8) > 0,
-                                false,
-                            );
-                            move_in_row(grid, &sub_tail_move, is_tail_at_start, true, true)
-                        } else {
-                            move_in_row(grid, &tail_position, is_tail_at_start, true, false)
-                        }
-                    }
-                    _ => panic!("unknown"),
-                };
-                tail_positions.push(new_tail_position.clone());
-                tail_position = new_tail_position;
+    println!("head: (x: {}, y: {})", new_head.x, new_head.y);
+    if distance_between_points(&new_head, &tail) > 1 {
+        println!("{dir}  (before)tail: (x: {}, y: {})", tail.x, tail.y);
+        let updated = match dir {
+            "R" => {
+                if head.y != tail.y {
+                    let sub = move_vertical(&tail, head.y - tail.y > 0);
+                    println!("sub {sub:?}");
+                    move_horizontal(&sub, true)
+                } else {
+                    move_horizontal(&tail, true)
+                }
             }
 
-            //print grid
-            // print_grid(grid);
-        }
+            "L" => {
+                if head.y != tail.y {
+                    let sub = move_vertical(&tail, head.y - tail.y > 0);
+                    println!("sub {sub:?}");
+                    move_horizontal(&sub, false)
+                } else {
+                    move_horizontal(&tail, false)
+                }
+            }
+            "U" => {
+                if head.x != tail.x {
+                    let sub = move_horizontal(&tail, head.x - tail.x > 0);
+                    println!("sub {sub:?}");
+                    move_vertical(&sub, true)
+                } else {
+                    move_vertical(&tail, true)
+                }
+            }
+            "D" => {
+                if head.x != tail.x {
+                    let sub = move_horizontal(&tail, head.x - tail.x > 0);
+                    println!("sub {sub:?}");
+                    move_vertical(&sub, false)
+                } else {
+                    move_vertical(&tail, false)
+                }
+            }
+            _ => panic!("no"),
+        };
+        tail_locs.insert(updated.clone());
+        // println!("{:#?}", tail_locs);
+        println!("  tail: ({updated:?})");
+
+        // if tail_locs.len() == 3 {
+        //     println!("");
+        //     panic!();
+        // }
+
+        new_tail = Some(updated);
     }
 
-    println!("Tail positions {}", tail_positions.len());
+    (new_head, new_tail)
 }
 
-fn part_1(input_string: &str) -> Result<(), Error> {
-    // let grid = &mut build_grid_from_input_string(input_string)?;
-    let instructions = build_instructions_from_input_string(input_string);
-    let max = instructions.iter().max().unwrap().1 * 100;
-    let grid = &mut build_grid_from_max_input(max);
-    let start_position = Position::new(grid.len() - 1, 0);
-    grid[start_position.row][start_position.col] = PositionItem::Both;
-    // print_grid(&grid);
-    apply_instructions_to_grid(grid, &instructions, start_position);
-    Ok(())
+//head = x,y
+fn follow_instructions_and_record_unique_tail_locs(instructions: &Instructions) -> usize {
+    let mut head: Location = Location::new(0, 0);
+    let mut tail: Location = head.clone();
+    let mut tail_locs: HashSet<Location> = HashSet::new();
+    tail_locs.insert(tail.clone());
+    instructions.iter().for_each(|(dir, count)| {
+        println!("{dir} {count}");
+        for _ in 0..*count {
+            let updated = execute_instruction(dir, &head, &tail, &mut tail_locs);
+            head = updated.0;
+            if let Some(new_tail) = updated.1 {
+                tail = new_tail;
+            }
+            println!("");
+        }
+    });
+    tail_locs.len()
 }
 
-pub fn run() -> Result<(), Error> {
+pub fn part_1(input: &str) -> usize {
+    let instructions = build_instructions_from_input_string(input);
+    follow_instructions_and_record_unique_tail_locs(&instructions)
+}
+
+pub fn run() {
     println!("Day 9");
 
     {
         let input_string = include_str!("sample");
         println!("Part 1 - sample");
-        part_1(input_string)?;
+        let result = part_1(input_string);
+        println!("  Result: {result}");
+        println!("  Expected: 13\n")
     }
 
     {
         let input_string = include_str!("input");
         println!("Part 1 - input");
-        part_1(input_string)?;
+        let result = part_1(input_string);
+        println!("  Result: {result} (prev: 6690)");
+        println!("  Expected: ....\n");
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::Location;
+    use std::collections::HashSet;
+
+    #[test]
+    fn test_instruction_for_down() {
+        let mut tail_locs: HashSet<Location> = HashSet::new();
+        let head = Location::from((0, 0));
+        let tail = Location::from((0, 0));
+        let (new_head, _) = super::execute_instruction("D", &head, &tail, &mut tail_locs);
+        assert_eq!(new_head, Location::from((0, -1)));
     }
 
-    Ok(())
+    #[test]
+    fn test_instruction_for_down_with_tail() {
+        let mut tail_locs: HashSet<Location> = HashSet::new();
+        let head = Location::from((0, -1));
+        let tail = Location::from((0, 0));
+        let (new_head, new_tail) = super::execute_instruction("D", &head, &tail, &mut tail_locs);
+        assert_eq!(new_head, Location::from((0, -2)));
+        assert_eq!(new_tail, Some(Location::from((0, -1))));
+    }
+
+    #[test]
+    fn test_instruction_for_up() {
+        let mut tail_locs: HashSet<Location> = HashSet::new();
+        let head = Location::from((0, 0));
+        let tail = Location::from((0, 0));
+        let (new_head, _) = super::execute_instruction("U", &head, &tail, &mut tail_locs);
+        assert_eq!(new_head, Location::from((0, 1)));
+    }
+
+    #[test]
+    fn test_instruction_for_up_with_tail() {
+        let mut tail_locs: HashSet<Location> = HashSet::new();
+        let head = Location::from((0, 1));
+        let tail = Location::from((0, 0));
+        let (new_head, new_tail) = super::execute_instruction("U", &head, &tail, &mut tail_locs);
+        assert_eq!(new_head, Location::from((0, 2)));
+        assert_eq!(new_tail, Some(Location::from((0, 1))));
+    }
+
+    #[test]
+    fn test_instruction_for_left() {
+        let mut tail_locs: HashSet<Location> = HashSet::new();
+        let head = Location::from((0, 0));
+        let tail = Location::from((0, 0));
+        let (new_head, _) = super::execute_instruction("L", &head, &tail, &mut tail_locs);
+        assert_eq!(new_head, Location::from((-1, 0)));
+    }
+
+    #[test]
+    fn test_instruction_for_left_with_tail() {
+        let mut tail_locs: HashSet<Location> = HashSet::new();
+        let head = Location::from((-1, 0));
+        let tail = Location::from((0, 0));
+        let (new_head, new_tail) = super::execute_instruction("L", &head, &tail, &mut tail_locs);
+        assert_eq!(new_head, Location::from((-2, 0)));
+        assert_eq!(new_tail, Some(Location::from((-1, 0))));
+    }
+
+    #[test]
+    fn test_instruction_for_right() {
+        let mut tail_locs: HashSet<Location> = HashSet::new();
+        let head = Location::from((0, 0));
+        let tail = Location::from((0, 0));
+        let (new_head, _) = super::execute_instruction("R", &head, &tail, &mut tail_locs);
+        assert_eq!(new_head, Location::from((1, 0)));
+    }
+
+    #[test]
+    fn test_instruction_for_right_with_tail() {
+        let mut tail_locs: HashSet<Location> = HashSet::new();
+        let head = Location::from((1, 0));
+        let tail = Location::from((0, 0));
+        let (new_head, new_tail) = super::execute_instruction("R", &head, &tail, &mut tail_locs);
+        assert_eq!(new_head, Location::from((2, 0)));
+        assert_eq!(new_tail, Some(Location::from((1, 0))));
+    }
+
+    #[test]
+    fn test_instruction_for_right_down() {
+        let mut tail_locs: HashSet<Location> = HashSet::new();
+        let head = Location::from((1, 0));
+        let tail = Location::from((0, 0));
+        let (new_head, _) = super::execute_instruction("D", &head, &tail, &mut tail_locs);
+        assert_eq!(new_head, Location::from((1, -1)));
+    }
+
+    #[test]
+    fn test_instruction_for_right_down_with_tail() {
+        let mut tail_locs: HashSet<Location> = HashSet::new();
+        let head = Location::from((1, -1));
+        let tail = Location::from((0, 0));
+        let (new_head, new_tail) = super::execute_instruction("D", &head, &tail, &mut tail_locs);
+        assert_eq!(new_head, Location::from((1, -2)));
+        assert_eq!(new_tail, Some(Location::from((1, -1))));
+    }
+
+    // #[test]
+    // fn test_instruction_for_right_up() {
+    //     let mut tail_locs: HashSet<Location> = HashSet::new();
+    //     let head = Location::from((1, 0));
+    //     let tail = Location::from((0, 0));
+    //     let (new_head, _) = super::execute_instruction("D", &head, &tail, &mut tail_locs);
+    //     assert_eq!(new_head, Location::from((1, -1)));
+    // }
+
+    // #[test]
+    // fn test_instruction_for_right_up_with_tail() {
+    //     let mut tail_locs: HashSet<Location> = HashSet::new();
+    //     let head = Location::from((1, -1));
+    //     let tail = Location::from((0, 0));
+    //     let (new_head, new_tail) = super::execute_instruction("R", &head, &tail, &mut tail_locs);
+    //     assert_eq!(new_head, Location::from((2, -1)));
+    //     assert_eq!(new_tail, Some(Location::from((1, -1))));
+    // }
 }
