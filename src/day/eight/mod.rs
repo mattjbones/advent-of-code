@@ -1,5 +1,3 @@
-use std::io::Lines;
-
 type Grid = Vec<Vec<usize>>;
 type VizGrid = Vec<Vec<bool>>;
 

@@ -120,7 +120,7 @@ pub fn run() {
 
         let item = Item::Dir(root.to_owned());
         println!("{:?}", PrettyNode(item));
-        panic!("test");
+        // panic!("test");
     }
 
     {
@@ -147,7 +147,7 @@ fn find_dir_to_delete(root: &mut Box<Directory>) -> i32 {
     println!("totals: {totals:?}");
     let used_space = root.total_size;
     let free_space = dbg!(TOTAL_SPACE - used_space);
-    let mut target_dirs: Vec<i32> = dir_totals
+    let target_dirs: Vec<i32> = dir_totals
         .into_iter()
         .rev()
         .copied()
@@ -181,20 +181,19 @@ fn build_directory_tree_string(tree: &str) -> Box<Directory> {
                     current_dir = match path {
                         "/" => "/".to_string(),
                         ".." => {
-                            let mut new_parent = String::new();
                             if let Some(dir) = root.find_dir(&current_dir) {
                                 if let Some(parent) = &dir.parent {
-                                    new_parent = parent.clone()
+                                    parent.clone()
                                 } else {
+                                    // new_parent = "".to_string();
                                     panic!("no parent path");
                                 }
                             } else {
                                 // println!("{:#?}", root);
                                 // panic!("cannot find match for {current_dir:?}");
                                 // can't go above "/"
-                                new_parent = "/".to_string()
+                                "/".to_string()
                             }
-                            new_parent
                         }
                         _ => {
                             // println!("child dir: {}", current_dir);

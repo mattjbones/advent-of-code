@@ -10,6 +10,7 @@ fn main() {
     // day::four::run().unwrap();
     // day::five::run();
     // day::six::run().unwrap();
-    day::seven::run();
+    // day::seven::run();
     // day::eight::run();
+    day::nine::run().unwrap();
 }
