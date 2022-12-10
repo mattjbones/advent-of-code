@@ -12,5 +12,6 @@ fn main() {
     // day::six::run().unwrap();
     // day::seven::run();
     // day::eight::run();
-    day::nine::run();
+    // day::nine::run();
+    day::ten::run();
 }
