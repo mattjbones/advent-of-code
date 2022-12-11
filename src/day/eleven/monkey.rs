@@ -1,15 +1,17 @@
 use std::{collections::VecDeque, fmt::Debug, rc::Rc};
 
-type Operation = Rc<dyn Fn(&i32) -> i32>;
-type TestFn = Rc<dyn Fn(&i32) -> bool>;
+type Operation = Rc<dyn Fn(&i64) -> i64>;
+type TestFn = Rc<dyn Fn(&i64) -> bool>;
 type TestAction = Rc<dyn Fn(bool) -> u32>;
 
 #[derive(Clone)]
 pub struct Monkey {
-    pub items: VecDeque<i32>,
+    pub items: VecDeque<i64>,
     pub operation: Operation,
     pub test: TestFn,
     pub test_action: TestAction,
+    pub worry_level_factor: i64,
+    pub test_val: i64,
 }
 
 impl Debug for Monkey {
@@ -24,11 +26,11 @@ impl Debug for Monkey {
 }
 
 impl Monkey {
-    pub fn take_first(&mut self) -> Option<i32> {
+    pub fn take_first(&mut self) -> Option<i64> {
         VecDeque::pop_front(&mut self.items)
     }
 
-    pub fn new(input: &str) -> Self {
+    pub fn new(input: &str, worry_level_factor: i64) -> Self {
         let lines: Vec<&str> = input.lines().into_iter().collect();
         let (first, rest) = lines.split_first().unwrap();
         if !first.contains("Monkey") {
@@ -40,6 +42,8 @@ impl Monkey {
             test: Rc::new(|_| false),
             operation: Rc::new(|_| 0),
             test_action: Rc::new(|_| 0),
+            worry_level_factor,
+            test_val: 0,
         };
 
         for line in rest {
@@ -52,7 +56,8 @@ impl Monkey {
             }
 
             if let Some(test_fn) = Self::parse_line_for_test_fn(line) {
-                empty.test = test_fn;
+                empty.test = test_fn.0;
+                empty.test_val = test_fn.1;
             }
         }
         if let Some(test_action) = Self::parse_lines_for_test_actions(rest) {
@@ -91,12 +96,16 @@ impl Monkey {
         }))
     }
 
-    fn parse_line_for_test_fn(line: &str) -> Option<TestFn> {
+    fn parse_line_for_test_fn(line: &str) -> Option<(TestFn, i64)> {
         if let Some(test_string) = Self::extract_value_from_string(line, "Test:") {
             match test_string.trim().split(" ").collect::<Vec<&str>>()[..] {
                 ["divisible", _, val] => {
-                    let val = val.parse::<i32>();
-                    Some(Rc::new(move |item: &i32| item % val.clone().unwrap() == 0))
+                    let val = val.parse::<i64>();
+                    let return_val = val.clone();
+                    Some((
+                        Rc::new(move |item: &i64| item % val.clone().unwrap() == 0),
+                        return_val.unwrap(),
+                    ))
                 }
                 _ => panic!("ded"),
             }
@@ -120,26 +129,30 @@ impl Monkey {
 
             match operation[..] {
                 [_, "*", val] => {
-                    let number_val = val.parse::<i32>();
-                    Some(Rc::new(move |item: &i32| {
+                    let number_val = val.parse::<i64>();
+                    Some(Rc::new(move |item: &i64| {
+                        // println!("item {item} * {}", number_val.clone().unwrap_or(*item));
                         item * number_val.clone().unwrap_or(*item)
                     }))
                 }
                 [_, "/", val] => {
-                    let number_val = val.parse::<i32>();
-                    Some(Rc::new(move |item: &i32| {
+                    let number_val = val.parse::<i64>();
+                    Some(Rc::new(move |item: &i64| {
+                        // println!("item {item} / {}", number_val.clone().unwrap_or(*item));
                         item / number_val.clone().unwrap_or(*item)
                     }))
                 }
                 [_, "+", val] => {
-                    let number_val = val.parse::<i32>();
-                    Some(Rc::new(move |item: &i32| {
+                    let number_val = val.parse::<i64>();
+                    Some(Rc::new(move |item: &i64| {
+                        // println!("item {item} + {}", number_val.clone().unwrap_or(*item));
                         item + number_val.clone().unwrap_or(*item)
                     }))
                 }
                 [_, "-", val] => {
-                    let number_val = val.parse::<i32>();
-                    Some(Rc::new(move |item: &i32| {
+                    let number_val = val.parse::<i64>();
+                    Some(Rc::new(move |item: &i64| {
+                        // println!("item {item} - {}", number_val.clone().unwrap_or(*item));
                         item - number_val.clone().unwrap_or(*item)
                     }))
                 }
@@ -150,12 +163,12 @@ impl Monkey {
         }
     }
 
-    fn parse_line_for_items(line: &str) -> Option<Vec<i32>> {
+    fn parse_line_for_items(line: &str) -> Option<Vec<i64>> {
         if let Some(items_string) = Self::extract_value_from_string(line, "Starting items:") {
             Some(
                 items_string
                     .split(",")
-                    .map(|item| item.trim().parse::<i32>().unwrap())
+                    .map(|item| item.trim().parse::<i64>().unwrap())
                     .collect(),
             )
         } else {
