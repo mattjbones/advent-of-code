@@ -179,52 +179,61 @@ fn move_tail(
     let mut new_tail = None;
     let distance = distance_between_points(&head, &tail);
 
-    if distance > 1.0 {
-        // print_grid(&vec![head.clone(), tail.clone()]);
-    }
-
+    // println!("BEFORE");
+    // print_grid(&Vec::from([head.clone(), tail.clone()]));
+    // println!("{dir} -- {distance} tail: (x: {}, y: {})", tail.x, tail.y);
     if distance >= 2.0 {
-        // println!("{dir}  (before)tail: (x: {}, y: {})", tail.x, tail.y);
-        let updated = match dir {
-            "R" => {
-                if head.y != tail.y {
-                    let sub = move_vertical(&tail, head.y - tail.y > 0);
-                    move_horizontal(&sub, true)
-                } else {
-                    move_horizontal(&tail, true)
-                }
-            }
-            "L" => {
-                if head.y != tail.y {
-                    let sub = move_vertical(&tail, head.y - tail.y > 0);
-                    move_horizontal(&sub, false)
-                } else {
-                    move_horizontal(&tail, false)
-                }
-            }
-            "U" => {
-                if head.x != tail.x {
-                    let sub = move_horizontal(&tail, head.x - tail.x > 0);
-                    move_vertical(&sub, true)
-                } else {
-                    move_vertical(&tail, true)
-                }
-            }
-            "D" => {
-                if head.x != tail.x {
-                    let sub = move_horizontal(&tail, head.x - tail.x > 0);
-                    move_vertical(&sub, false)
-                } else {
-                    move_vertical(&tail, false)
-                }
-            }
-            _ => panic!("no"),
+        let x_diff = if head.x - tail.x > 0 {
+            head.x - tail.x
+        } else {
+            tail.x - head.x
         };
+
+        let y_diff = if head.y - tail.y > 0 {
+            head.y - tail.y
+        } else {
+            tail.y - head.y
+        };
+
+        // println!("x_diff {}", x_diff);
+        // println!("y_diff {}", y_diff);
+
+        let sub_move = if x_diff < y_diff && x_diff != 0 {
+            //if we're closer to the x move one over
+            move_horizontal(&tail, head.x > tail.x)
+        } else if y_diff < x_diff && y_diff != 0 {
+            //if we're close to y move one over
+            move_vertical(&tail, head.y > tail.y)
+        } else if head.y == tail.y || head.x == tail.x {
+            // if they're on the same row / col don't change anything
+            tail.clone()
+        } else {
+            // diag in either direction
+            let sub = move_vertical(&tail, head.y > tail.y);
+            move_horizontal(&sub, head.x > sub.x)
+        };
+
+        // println!("AFTER");
+        // let distance = distance_between_points(&head, &sub_move);
+        // println!(
+        //     "{dir} -- {distance} tail: (x: {}, y: {}), head: (x: {}, y:{})",
+        //     sub_move.x, sub_move.y, head.x, head.y
+        // );
+        // print_grid(&Vec::from([head.clone(), sub_move.clone()]));
+
+        let updated = if sub_move.y == head.y {
+            move_horizontal(&sub_move, head.x > sub_move.x)
+        } else if sub_move.x == head.x {
+            move_vertical(&sub_move, head.y > sub_move.y)
+        } else {
+            sub_move.clone()
+        };
+
+        // println!("FINAL");
+        // print_grid(&Vec::from([head.clone(), updated.clone()]));
         if is_tail {
             tail_locs.insert(updated.clone());
         }
-        // println!("  tail: ({updated:?})");
-
         new_tail = Some(updated);
     }
 
@@ -244,21 +253,33 @@ fn follow_instructions_and_record_unique_tail_locs(
     let mut tail_locs: HashSet<Location> = HashSet::new();
     tail_locs.insert(body.last().unwrap().clone());
     instructions.iter().for_each(|(dir, count)| {
-        println!("{dir} {count}");
+        // println!("== {dir} {count} ==");
         for i in 0..*count {
+            // print_grid(&body);
             body = execute_instruction_on_body(dir, &body, &mut tail_locs);
-            if dir == "L" && *count == 8 {
-                println!("{dir} {count}/{}", i + 1);
-                print_grid(&body);
-            }
+            // if dir == "U" {
+            //     println!("{dir} {count}/{}", i + 1);
+            //     print_grid(&body);
+            //     print_tail_loc(&tail_locs);
+            // }
         }
 
-        if dir == "L" && *count == 8 {
-            panic!();
-        }
-        print_grid(&body);
+        // if dir == "U" && *count == 8 {
+        //     print_grid(&body);
+        //     print_tail_loc(&tail_locs);
+        //     // panic!();
+        // }
+        // print_grid(&body);
+        // print_tail_loc(&tail_locs);
     });
-    print_tail_loc(&tail_locs);
+    // print_tail_loc(&tail_locs);
+    // println!(
+    //     "{:?}",
+    //     tail_locs
+    //         .iter()
+    //         .map(|loc| format!("{{\"x\": {}, \"y\": {} }}", loc.x, loc.y))
+    //         .collect::<Vec<String>>()
+    // );
     tail_locs.len()
 }
 
@@ -275,29 +296,29 @@ pub fn part_2(input: &str) -> usize {
 pub fn run() {
     println!("Day 9");
 
-    // {
-    //     let input_string = include_str!("sample");
-    //     println!("Part 1 - sample");
-    //     let result = part_1(input_string);
-    //     println!("  Result: {result}");
-    //     println!("  Expected: 13\n")
-    // }
+    {
+        let input_string = include_str!("sample");
+        println!("Part 1 - sample");
+        let result = part_1(input_string);
+        println!("  Result: {result}");
+        println!("  Expected: 13\n")
+    }
 
-    // {
-    //     let input_string = include_str!("input");
-    //     println!("Part 1 - input");
-    //     let result = part_1(input_string);
-    //     println!("  Result: {result}");
-    //     println!("  Expected: 6522\n");
-    // }
+    {
+        let input_string = include_str!("input");
+        println!("Part 1 - input");
+        let result = part_1(input_string);
+        println!("  Result: {result}");
+        println!("  Expected: 6522\n");
+    }
 
-    // {
-    //     let input_string = include_str!("sample");
-    //     println!("Part 2 - sample");
-    //     let result = part_2(input_string);
-    //     println!("  Result: {result}");
-    //     println!("  Expected: 1\n");
-    // }
+    {
+        let input_string = include_str!("sample");
+        println!("Part 2 - sample");
+        let result = part_2(input_string);
+        println!("  Result: {result}");
+        println!("  Expected: 1\n");
+    }
 
     {
         let input_string = include_str!("sample-1");
@@ -305,6 +326,14 @@ pub fn run() {
         let result = part_2(input_string);
         println!("  Result: {result}");
         println!("  Expected: 36\n");
+    }
+
+    {
+        let input_string = include_str!("input");
+        println!("Part 2 - input ");
+        let result = part_2(input_string);
+        println!("  Result: {result}");
+        println!("  Expected: 2717 \n");
     }
 }
 
