@@ -1,12 +1,11 @@
 use std::env;
 use std::fs;
-use std::io::Result;
 
 const INPUT: &str = "/src/day/one/input";
 
-pub fn run() -> Result<()> {
+pub fn run() {
     println!("Day one");
-    let path = env::current_dir()?;
+    let path = env::current_dir().unwrap();
     let totals = fs::read_to_string(format!("{}{}", path.display(), INPUT))
         .expect("Should have been able to read the file");
 
@@ -37,6 +36,4 @@ pub fn run() -> Result<()> {
     }
 
     println!("biggest total: {:}, {:?}\n", total, totals);
-
-    Ok(())
 }

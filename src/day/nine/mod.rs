@@ -339,15 +339,18 @@ mod tests {
             _ => assert!(false, "failed"),
         };
     }
-    /*
     #[test]
     fn test_instruction_for_up() {
         let mut tail_locs: HashSet<Location> = HashSet::new();
         let head = Location::from((0, 0));
         let tail = Location::from((0, 0));
-        let (new_head, _) =
-            super::execute_instruction("U", &head, &tail, &mut tail_locs, true, true);
-        assert_eq!(new_head, Location::from((0, 1)));
+
+        match &super::execute_instruction_on_body("U", &vec![head, tail], &mut tail_locs)[..] {
+            [new_head, _] => {
+                assert_eq!(*new_head, Location::from((0, 1)));
+            }
+            _ => assert!(false, "failed"),
+        };
     }
 
     #[test]
@@ -355,10 +358,14 @@ mod tests {
         let mut tail_locs: HashSet<Location> = HashSet::new();
         let head = Location::from((0, 1));
         let tail = Location::from((0, 0));
-        let (new_head, new_tail) =
-            super::execute_instruction("U", &head, &tail, &mut tail_locs, true, true);
-        assert_eq!(new_head, Location::from((0, 2)));
-        assert_eq!(new_tail, Some(Location::from((0, 1))));
+
+        match &super::execute_instruction_on_body("U", &vec![head, tail], &mut tail_locs)[..] {
+            [new_head, new_tail] => {
+                assert_eq!(*new_head, Location::from((0, 2)));
+                assert_eq!(*new_tail, Location::from((0, 1)));
+            }
+            _ => assert!(false, "failed"),
+        };
     }
 
     #[test]
@@ -366,9 +373,13 @@ mod tests {
         let mut tail_locs: HashSet<Location> = HashSet::new();
         let head = Location::from((0, 0));
         let tail = Location::from((0, 0));
-        let (new_head, _) =
-            super::execute_instruction("L", &head, &tail, &mut tail_locs, true, true);
-        assert_eq!(new_head, Location::from((-1, 0)));
+
+        match &super::execute_instruction_on_body("L", &vec![head, tail], &mut tail_locs)[..] {
+            [new_head, _] => {
+                assert_eq!(*new_head, Location::from((-1, 0)));
+            }
+            _ => assert!(false, "failed"),
+        }
     }
 
     #[test]
@@ -376,10 +387,13 @@ mod tests {
         let mut tail_locs: HashSet<Location> = HashSet::new();
         let head = Location::from((-1, 0));
         let tail = Location::from((0, 0));
-        let (new_head, new_tail) =
-            super::execute_instruction("L", &head, &tail, &mut tail_locs, true, true);
-        assert_eq!(new_head, Location::from((-2, 0)));
-        assert_eq!(new_tail, Some(Location::from((-1, 0))));
+        match &super::execute_instruction_on_body("L", &vec![head, tail], &mut tail_locs)[..] {
+            [new_head, new_tail] => {
+                assert_eq!(*new_head, Location::from((-2, 0)));
+                assert_eq!(*new_tail, Location::from((-1, 0)));
+            }
+            _ => assert!(false, "failed"),
+        };
     }
 
     #[test]
@@ -387,9 +401,12 @@ mod tests {
         let mut tail_locs: HashSet<Location> = HashSet::new();
         let head = Location::from((0, 0));
         let tail = Location::from((0, 0));
-        let (new_head, _) =
-            super::execute_instruction("R", &head, &tail, &mut tail_locs, true, true);
-        assert_eq!(new_head, Location::from((1, 0)));
+        match &super::execute_instruction_on_body("R", &vec![head, tail], &mut tail_locs)[..] {
+            [new_head, _] => {
+                assert_eq!(*new_head, Location::from((1, 0)));
+            }
+            _ => assert!(false, "failed"),
+        }
     }
 
     #[test]
@@ -397,10 +414,14 @@ mod tests {
         let mut tail_locs: HashSet<Location> = HashSet::new();
         let head = Location::from((1, 0));
         let tail = Location::from((0, 0));
-        let (new_head, new_tail) =
-            super::execute_instruction("R", &head, &tail, &mut tail_locs, true, true);
-        assert_eq!(new_head, Location::from((2, 0)));
-        assert_eq!(new_tail, Some(Location::from((1, 0))));
+
+        match &super::execute_instruction_on_body("R", &vec![head, tail], &mut tail_locs)[..] {
+            [new_head, new_tail] => {
+                assert_eq!(*new_head, Location::from((2, 0)));
+                assert_eq!(*new_tail, Location::from((1, 0)));
+            }
+            _ => assert!(false, "failed"),
+        };
     }
 
     #[test]
@@ -408,9 +429,13 @@ mod tests {
         let mut tail_locs: HashSet<Location> = HashSet::new();
         let head = Location::from((1, 0));
         let tail = Location::from((0, 0));
-        let (new_head, _) =
-            super::execute_instruction("D", &head, &tail, &mut tail_locs, true, true);
-        assert_eq!(new_head, Location::from((1, -1)));
+
+        match &super::execute_instruction_on_body("D", &vec![head, tail], &mut tail_locs)[..] {
+            [new_head, _] => {
+                assert_eq!(*new_head, Location::from((1, -1)));
+            }
+            _ => assert!(false, "failed"),
+        }
     }
 
     #[test]
@@ -418,9 +443,13 @@ mod tests {
         let mut tail_locs: HashSet<Location> = HashSet::new();
         let head = Location::from((1, -1));
         let tail = Location::from((0, 0));
-        let (new_head, new_tail) =
-            super::execute_instruction("D", &head, &tail, &mut tail_locs, true, true);
-        assert_eq!(new_head, Location::from((1, -2)));
-        assert_eq!(new_tail, Some(Location::from((1, -1))));
-    }*/
+
+        match &super::execute_instruction_on_body("D", &vec![head, tail], &mut tail_locs)[..] {
+            [new_head, new_tail] => {
+                assert_eq!(*new_head, Location::from((1, -2)));
+                assert_eq!(*new_tail, Location::from((1, -1)));
+            }
+            _ => assert!(false, "failed"),
+        };
+    }
 }

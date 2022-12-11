@@ -1,19 +1,19 @@
 use std::env::current_dir;
 use std::fs::File;
-use std::io::{self, BufRead, Error};
+use std::io::{self, BufRead};
 use std::ops::RangeInclusive;
 
 const INPUT: &str = "/src/day/three/input";
 
-pub fn run() -> Result<(), Error> {
+pub fn run() {
     println!("Day 3");
-    let path = current_dir()?;
+    let path = current_dir().unwrap();
     let priorities = generate_priorities();
 
     {
         println!("Part 1");
 
-        let file = File::open(format!("{}{}", path.display(), INPUT))?;
+        let file = File::open(format!("{}{}", path.display(), INPUT)).unwrap();
         let lines = io::BufReader::new(&file).lines();
 
         let mut matches: Vec<char> = Vec::new();
@@ -43,7 +43,7 @@ pub fn run() -> Result<(), Error> {
     {
         println!("Part 2");
 
-        let file = File::open(format!("{}{}", path.display(), INPUT))?;
+        let file = File::open(format!("{}{}", path.display(), INPUT)).unwrap();
         let lines = io::BufReader::new(&file).lines();
 
         let mut badges: Vec<char> = Vec::new();
@@ -81,7 +81,6 @@ pub fn run() -> Result<(), Error> {
             .unwrap();
         println!("Badges total: {:?}", total);
     }
-    Ok(())
 }
 
 fn generate_priorities() -> [char; 53] {

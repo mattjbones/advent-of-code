@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-pub fn run() -> Result<(), std::io::Error> {
+pub fn run() {
     println!("Day 6");
 
     {
@@ -60,6 +60,4 @@ pub fn run() -> Result<(), std::io::Error> {
             print!(", maker at {}\n", count + 1);
         }
     }
-
-    Ok(())
 }

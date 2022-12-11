@@ -31,8 +31,8 @@ impl Cleaner {
     }
 }
 
-pub fn run() -> Result<(), Error> {
-    println!("Day 3");
+pub fn run() {
+    println!("Day 4");
 
     {
         println!("Part 1 / 2");
@@ -51,6 +51,4 @@ pub fn run() -> Result<(), Error> {
 
         println!("Total: {total}");
     }
-
-    Ok(())
 }

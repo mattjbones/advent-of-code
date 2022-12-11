@@ -1,7 +1,7 @@
+use std::env;
 use std::fs::File;
 use std::io;
 use std::io::BufRead;
-use std::{env, io::Result};
 
 const INPUT: &str = "/src/day/two/input";
 
@@ -100,13 +100,13 @@ impl Play {
     }
 }
 
-pub fn run() -> Result<()> {
+pub fn run() {
     println!("Day two");
-    let path = env::current_dir()?;
+    let path = env::current_dir().unwrap();
 
     {
         println!("Part 1");
-        let file = File::open(format!("{}{}", path.display(), INPUT))?;
+        let file = File::open(format!("{}{}", path.display(), INPUT)).unwrap();
         let lines = io::BufReader::new(&file).lines();
 
         let mut total = 0;
@@ -121,7 +121,7 @@ pub fn run() -> Result<()> {
 
     {
         println!("Part 2");
-        let file = File::open(format!("{}{}", path.display(), INPUT))?;
+        let file = File::open(format!("{}{}", path.display(), INPUT)).unwrap();
         let lines = io::BufReader::new(file).lines();
         let mut total = 0;
         for line in lines {
@@ -135,6 +135,4 @@ pub fn run() -> Result<()> {
         }
         println!("Total: {}", total);
     }
-
-    Ok(())
 }
