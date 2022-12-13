@@ -122,14 +122,14 @@ fn move_vertical(item: &Location, inc: bool) -> Location {
     }
 }
 
-fn print_grid(body: &Vec<Location>) {
-    println!("{:?}", PrettyTail(body));
-}
+// fn print_grid(body: &Vec<Location>) {
+//     println!("{:?}", PrettyTail(body));
+// }
 
-fn print_tail_loc(tail_locs: &HashSet<Location>) {
-    println!("== Final ==");
-    println!("{:?}", PrettyBody(tail_locs));
-}
+// fn print_tail_loc(tail_locs: &HashSet<Location>) {
+//     println!("== Final ==");
+//     println!("{:?}", PrettyBody(tail_locs));
+// }
 
 fn execute_instruction_on_body(
     dir: &str,
@@ -170,7 +170,7 @@ fn move_head(dir: &str, head: &Location) -> Location {
 }
 
 fn move_tail(
-    dir: &str,
+    _: &str,
     head: &Location,
     tail: &Location,
     is_tail: bool,
@@ -254,7 +254,7 @@ fn follow_instructions_and_record_unique_tail_locs(
     tail_locs.insert(body.last().unwrap().clone());
     instructions.iter().for_each(|(dir, count)| {
         // println!("== {dir} {count} ==");
-        for i in 0..*count {
+        for _ in 0..*count {
             // print_grid(&body);
             body = execute_instruction_on_body(dir, &body, &mut tail_locs);
             // if dir == "U" {

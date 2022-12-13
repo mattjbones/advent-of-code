@@ -20,6 +20,8 @@ fn main() {
         day::nine::run,
         day::ten::run,
         day::eleven::run,
+        day::twelve::run,
+        day::thirteen::run,
     ]);
 
     let args = args().into_iter().collect::<Vec<String>>();
