@@ -283,12 +283,12 @@ fn follow_instructions_and_record_unique_tail_locs(
     tail_locs.len()
 }
 
-pub fn part_1(input: &str) -> usize {
+fn part_1(input: &str) -> usize {
     let instructions = build_instructions_from_input_string(input);
     follow_instructions_and_record_unique_tail_locs(&instructions, 2)
 }
 
-pub fn part_2(input: &str) -> usize {
+fn part_2(input: &str) -> usize {
     let instructions = build_instructions_from_input_string(input);
     follow_instructions_and_record_unique_tail_locs(&instructions, 10)
 }

@@ -22,6 +22,7 @@ fn main() {
         day::eleven::run,
         day::twelve::run,
         day::thirteen::run,
+        day::fourteen::run,
     ]);
 
     let args = args().into_iter().collect::<Vec<String>>();
