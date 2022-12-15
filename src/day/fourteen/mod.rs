@@ -5,19 +5,19 @@ use position::*;
 pub fn run() {
     println!("Day 14");
 
-    // {
-    //     println!("Part 1 - Sample");
-    //     let result = part_1(include_str!("sample"));
-    //     println!(" Result {result}");
-    //     println!(" Expected 24");
-    // }
+    {
+        println!("Part 1 - Sample");
+        let result = part_1(include_str!("sample"));
+        println!(" Result {result}");
+        println!(" Expected 24");
+    }
 
-    // {
-    //     println!("Part 1 - Input");
-    //     let result = part_1(include_str!("input"));
-    //     println!(" Result {result}");
-    //     println!(" Expected 828");
-    // }
+    {
+        println!("Part 1 - Input");
+        let result = part_1(include_str!("input"));
+        println!(" Result {result}");
+        println!(" Expected 828");
+    }
 
     {
         println!("Part 2 - Sample");
