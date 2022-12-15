@@ -1,10 +1,11 @@
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub enum Item {
     Sensor,
     Beacon,
+    Coverage,
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Hash, Eq)]
 pub struct Position {
     pub x: isize,
     pub y: isize,
