@@ -26,13 +26,13 @@ impl Position {
         Self { y, x, item }
     }
 
-    pub fn is_sensor(&self) -> bool {
-        self.item == Item::Sensor
-    }
+    // pub fn is_sensor(&self) -> bool {
+    //     self.item == Item::Sensor
+    // }
 
-    pub fn is_beacon(&self) -> bool {
-        self.item == Item::Beacon
-    }
+    // pub fn is_beacon(&self) -> bool {
+    //     self.item == Item::Beacon
+    // }
 
     // pub fn get_points_between(&self, next: &Position) -> Vec<Position> {
     //     let mut points_between = Vec::new();

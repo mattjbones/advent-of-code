@@ -1,7 +1,4 @@
-use std::{
-    collections::{HashMap, HashSet},
-    sync::Arc,
-};
+use std::collections::HashMap;
 
 use position::*;
 mod position;
@@ -39,7 +36,7 @@ fn part_1(input: &str, y_index: isize) -> usize {
 fn build_coverage_for_target(
     coords: &HashMap<String, Position>,
     target: &Position,
-    y_index: isize,
+    _: isize,
 ) -> HashMap<String, Position> {
     let mut coverage = coords.clone();
     let mut level = 1;
@@ -75,7 +72,7 @@ fn build_coverage_for_target(
     coverage
 }
 
-fn build_coverage(coords: &HashMap<String, Position>, y_index: isize) -> Vec<Position> {
+fn build_coverage(coords: &HashMap<String, Position>, _: isize) -> Vec<Position> {
     // find 8,7
     // let mut coverage = HashMap::new();
     // println!(
@@ -102,36 +99,38 @@ fn build_coverage(coords: &HashMap<String, Position>, y_index: isize) -> Vec<Pos
         coverage.insert(key.clone(), val.clone());
     });
     print_map(&coverage, false);
-
-    panic!("test");
-
-    let rc_coords = Arc::new(coords.clone());
-    let results: Vec<Position> = coords
-        .clone()
+    coverage
         .into_iter()
-        .filter(|(_, item)| item.is_sensor())
-        .map(|(_, item)| {
-            let local = Arc::clone(&rc_coords);
-            std::thread::spawn(move || {
-                build_coverage_for_target(&local, &item, y_index)
-                    .iter()
-                    .map(|(_, val)| val.clone())
-                    .collect::<Vec<Position>>()
-            })
-        })
-        .map(|handle| handle.join())
-        .flat_map(|res| match res {
-            Ok(val) => val,
-            Err(e) => panic!("{:#?}", e),
-        })
-        .collect::<Vec<Position>>();
+        .map(|(_, x)| x)
+        .collect::<Vec<Position>>()
 
-    let coverage: HashSet<Position> = HashSet::from_iter(results);
-    print_grid(
-        &coverage.clone().into_iter().collect::<Vec<Position>>(),
-        false,
-    );
-    coverage.clone().into_iter().collect::<Vec<Position>>()
+    // let rc_coords = Arc::new(coords.clone());
+    // let results: Vec<Position> = coords
+    //     .clone()
+    //     .into_iter()
+    //     .filter(|(_, item)| item.is_sensor())
+    //     .map(|(_, item)| {
+    //         let local = Arc::clone(&rc_coords);
+    //         std::thread::spawn(move || {
+    //             build_coverage_for_target(&local, &item, y_index)
+    //                 .iter()
+    //                 .map(|(_, val)| val.clone())
+    //                 .collect::<Vec<Position>>()
+    //         })
+    //     })
+    //     .map(|handle| handle.join())
+    //     .flat_map(|res| match res {
+    //         Ok(val) => val,
+    //         Err(e) => panic!("{:#?}", e),
+    //     })
+    //     .collect::<Vec<Position>>();
+
+    // let coverage: HashSet<Position> = HashSet::from_iter(results);
+    // print_grid(
+    //     &coverage.clone().into_iter().collect::<Vec<Position>>(),
+    //     false,
+    // );
+    // coverage.clone().into_iter().collect::<Vec<Position>>()
 }
 
 fn analyse_coverage(coords: &Vec<Position>, y_index: isize) -> usize {

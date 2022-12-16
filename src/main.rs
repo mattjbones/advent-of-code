@@ -2,7 +2,10 @@
 
 use std::{env::args, process::exit};
 
+use crate::runner::Runner;
+
 pub mod day;
+pub mod runner;
 
 type DayRunner = fn();
 fn main() {
@@ -26,6 +29,9 @@ fn main() {
         day::fifteen::run,
     ]);
 
+    let other_days: Vec<Box<dyn Runner>> =
+        Vec::from([Box::new(day::sixteen::Sixteen {}) as Box<dyn Runner>]);
+
     let args = args().into_iter().collect::<Vec<String>>();
 
     if args.len() == 1 && args.first().unwrap().contains("advent_of_code") {
@@ -38,14 +44,22 @@ fn main() {
     if selected == "all" {
         days.into_iter().for_each(|day| day());
     } else if let Ok(selected_no) = selected.parse::<usize>() {
-        if selected_no > days.len() {
+        if selected_no > days.len() && selected_no - days.len() > other_days.len() {
             println!("Day not valid");
 
             println!("Select day no or \"all\"");
             println!("e.g. cargo run -- 9");
             exit(0);
         }
-        days[selected_no - 1]();
+
+        if let Some(day) = days.get(selected_no - 1) {
+            day();
+        } else {
+            other_days
+                .get(selected_no - days.len() - 1)
+                .unwrap()
+                .run_all();
+        }
     } else {
         println!("Select day no or \"all\"");
         println!("e.g. cargo run -- 9");
