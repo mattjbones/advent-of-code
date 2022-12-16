@@ -1,6 +1,6 @@
 #![feature(iter_next_chunk)]
 
-use std::{env::args, process::exit};
+use std::{env::args, fs, process::exit};
 
 use crate::runner::Runner;
 
@@ -29,8 +29,10 @@ fn main() {
         day::fifteen::run,
     ]);
 
-    let other_days: Vec<Box<dyn Runner>> =
-        Vec::from([Box::new(day::sixteen::Sixteen {}) as Box<dyn Runner>]);
+    let other_days: Vec<(Box<dyn Runner>, String)> = Vec::from([(
+        Box::new(day::sixteen::Sixteen {}) as Box<dyn Runner>,
+        "sixteen".to_string(),
+    )]);
 
     let args = args().into_iter().collect::<Vec<String>>();
 
@@ -55,10 +57,13 @@ fn main() {
         if let Some(day) = days.get(selected_no - 1) {
             day();
         } else {
-            other_days
-                .get(selected_no - days.len() - 1)
-                .unwrap()
-                .run_all();
+            let (runner, path) = other_days.get(selected_no - days.len() - 1).unwrap();
+            let sample_path = format!("days/{path}/sample");
+            let input_path = format!("days/{path}/input");
+
+            let sample_string = fs::read_to_string(sample_path).unwrap();
+            let input_string = fs::read_to_string(input_path).unwrap();
+            runner.run_all(&sample_string, &input_string);
         }
     } else {
         println!("Select day no or \"all\"");
