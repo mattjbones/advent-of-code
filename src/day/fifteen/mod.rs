@@ -41,109 +41,36 @@ fn build_coverage_for_target(
     target: &Position,
     y_index: isize,
 ) -> HashMap<String, Position> {
-    let mut coverage = HashMap::new();
-    let mut level = 0;
+    let mut coverage = coords.clone();
+    let mut level = 1;
+    println!("building coverage");
     loop {
         // lines
-        let mut found = Vec::new();
-        let lower_x = target.x - 1 * level;
-        let upper_x = target.x + level + 1;
+        let adjustment = level * 1;
+        let lower_x = dbg!(target.x - adjustment);
+        let upper_x = dbg!(target.x + adjustment);
 
-        let lower_y = target.y - 1 * level;
-        let upper_y = target.y + level + 1;
+        let lower_y = dbg!(target.y - adjustment);
+        let upper_y = dbg!(target.y + adjustment);
+        println!("{}", target);
 
-        let mut y = target.y;
-        let mut x = 0;
-        while y < upper_y {
-            for x in (lower_x + x)..(upper_x - x) {
-                let pos = coords.get(&format!("{},{}", x, y));
-                if pos.is_none() {
-                    if y == y_index || y == y_index - 1 || y == y_index + 1 {
-                        coverage.insert(format!("{}{}", x, y), Position::new(x, y, Item::Coverage));
-                    }
-                } else if let Some(pos) = pos {
-                    // println!("upper_y pos {}", pos);
-                    found.push(pos.is_beacon());
+        for y in lower_y..upper_y {
+            for x in lower_x..upper_x {
+                if x == target.x && y == target.y {
+                    continue;
                 }
+                coverage.insert(format!("{x},{y}"), Position::new(x, y, Item::Coverage));
+                println!("{x},{y}");
             }
-            y += 1;
-            x += 1;
         }
 
-        y = target.y;
-        x = 0;
-        while y > lower_y {
-            for x in (lower_x + x)..(upper_x - x) {
-                let pos = coords.get(&format!("{},{}", x, y));
-                if pos.is_none() {
-                    // println!("lower_y pos ({x},{y})");
-                    if y == y_index || y == y_index - 1 || y == y_index + 1 {
-                        coverage.insert(format!("{}{}", x, y), Position::new(x, y, Item::Coverage));
-                    }
-                } else if let Some(pos) = pos {
-                    // println!("lower_y pos {}", pos);
-                    found.push(pos.is_beacon());
-                }
-            }
-            y -= 1;
-            x += 1;
-        }
+        print_map(&coverage, false);
 
-        y = 0;
-        x = target.x;
-        while x < upper_x {
-            for y in (lower_y + y)..(upper_y - y) {
-                let pos = coords.get(&format!("{},{}", x, y));
-                if pos.is_none() {
-                    if y == y_index || y == y_index - 1 || y == y_index + 1 {
-                        coverage.insert(format!("{}{}", x, y), Position::new(x, y, Item::Coverage));
-                    }
-                } else if let Some(pos) = pos {
-                    // println!("upper_x pos {}", pos);
-                    found.push(pos.is_beacon());
-                }
-            }
-
-            x += 1;
-            y += 1;
-        }
-
-        y = 0;
-        x = target.x;
-        while x > lower_x {
-            for y in (lower_y + y)..(upper_y - y) {
-                let pos = coords.get(&format!("{},{}", x, y));
-                if pos.is_none() {
-                    if y == y_index || y == y_index - 1 || y == y_index + 1 {
-                        coverage.insert(format!("{}{}", x, y), Position::new(x, y, Item::Coverage));
-                    }
-                } else if let Some(pos) = pos {
-                    // println!("lower_x pos {}", pos);
-                    found.push(pos.is_beacon());
-                }
-            }
-
-            x -= 1;
-            y += 1;
-        }
-
-        // if level > 30 {
-        //     coverage.append(&mut coords.clone());
-        //     print_grid(&coverage, false);
-        //     panic!()
-        // }
-
-        if found.iter().any(|f| *f) {
-            // println!("Target {}", target);
-            // let mut print_cov = coverage.clone();
-            // coords.iter().for_each(|(key, val)| {
-            //     print_cov.insert(key.clone(), val.clone());
-            // });
-            // print_map(&print_cov, false);
+        if level == 1 {
             break;
         }
+
         level += 1;
-        // std::thread::sleep(std::time::Duration::from_millis(50));
     }
     coverage
 }
@@ -158,13 +85,13 @@ fn build_coverage(coords: &HashMap<String, Position>, y_index: isize) -> Vec<Pos
     //         .filter(|(_, item)| item.is_beacon())
     //         .collect::<Vec<(&String, &Position)>>()
     // );
-    println!(
-        "sensors {:#?}",
-        coords
-            .iter()
-            .filter(|(_, item)| item.is_sensor())
-            .collect::<Vec<(&String, &Position)>>()
-    );
+    // println!(
+    //     "sensors {:#?}",
+    //     coords
+    //         .iter()
+    //         .filter(|(_, item)| item.is_sensor())
+    //         .collect::<Vec<(&String, &Position)>>()
+    // );
 
     // println!("{:#?}", coords);
     // print_map(coords, false);
