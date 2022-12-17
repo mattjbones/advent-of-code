@@ -1,6 +1,6 @@
 #![feature(iter_next_chunk)]
 
-use std::{env::args, fs, process::exit};
+use std::{env, env::args, fs, process::exit};
 
 use crate::runner::Runner;
 
@@ -58,8 +58,10 @@ fn main() {
             day();
         } else {
             let (runner, path) = other_days.get(selected_no - days.len() - 1).unwrap();
-            let sample_path = format!("days/{path}/sample");
-            let input_path = format!("days/{path}/input");
+
+            let dir = env::current_dir().unwrap();
+            let sample_path = format!("{}/src/day/{path}/sample", dir.display());
+            let input_path = format!("{}/src/day/{path}/input", dir.display());
 
             let sample_string = fs::read_to_string(sample_path).unwrap();
             let input_string = fs::read_to_string(input_path).unwrap();
