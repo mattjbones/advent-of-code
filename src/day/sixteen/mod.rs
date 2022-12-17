@@ -15,16 +15,8 @@ pub struct Sixteen {}
 // 1 minute to open
 // 1 minute from one tunnel to next
 // start at AA - no flow rate / damaged
-impl Runner for Sixteen {
-    fn run_all(&self, sample: &str, input: &str) {
-        println!("Day 16");
-        self.part_1_sample(sample);
-        // self.part_1_input(input);
-    }
-
-    fn part_1_sample(&self, sample: &str) {
-        println!("Part 1 - Sample");
-
+impl Runner<usize> for Sixteen {
+    fn part_1_sample(&self, sample: &str) -> (usize, usize) {
         let nodes = sample
             .lines()
             .map(|line| parse_line(line))
@@ -33,20 +25,19 @@ impl Runner for Sixteen {
         let node_map: HashMap<String, Node> = HashMap::from_iter(nodes);
         let result = walk_map(&node_map, "AA", 30);
 
-        println!(" Result {result}");
-        println!(" Expected 1651")
+        (result, 1651)
     }
 
-    fn part_1_input(&self, input: &str) {
-        todo!()
+    fn part_1_input(&self, _: &str) -> (usize, usize) {
+        todo!();
     }
 
-    fn part_2_sample(&self, sample: &str) {
-        todo!()
+    fn part_2_sample(&self, _: &str) -> (usize, usize) {
+        todo!();
     }
 
-    fn part_2_input(&self, input: &str) {
-        todo!()
+    fn part_2_input(&self, _: &str) -> (usize, usize) {
+        todo!();
     }
 }
 
