@@ -5,24 +5,26 @@ use app::*;
 pub struct Seventeen {}
 impl Runner<usize> for Seventeen {
     fn part_1_sample(&self, sample: &str) -> (usize, usize) {
-        let chamber = Chamber::new(7, sample.chars().collect::<Vec<char>>(), 2022);
-        chamber.rocks.iter().for_each(|rock| {
-            println!("{:?}", rock.rock_type);
-            println!("{:?}", PrettyPositions(Box::new(rock.coords.clone()), 0));
-        });
-        let result = chamber.simulate();
+        let mut chamber = Chamber::new(7, sample.chars().collect::<Vec<char>>(), 2022);
+        let result = chamber.simulate(false, true, false);
         (result, 3068)
     }
 
-    fn part_1_input(&self, _: &str) -> (usize, usize) {
-        todo!();
+    fn part_1_input(&self, input: &str) -> (usize, usize) {
+        let mut chamber = Chamber::new(7, input.chars().collect::<Vec<char>>(), 2022);
+        let result = chamber.simulate(false, true, false);
+        (result, 3124)
     }
 
-    fn part_2_sample(&self, _: &str) -> (usize, usize) {
-        todo!();
+    fn part_2_sample(&self, sample: &str) -> (usize, usize) {
+        let mut chamber = Chamber::new(7, sample.chars().collect::<Vec<char>>(), 1_000_000_000_000);
+        let result = chamber.simulate(false, false, true);
+        (result, 1514285714288)
     }
 
-    fn part_2_input(&self, _: &str) -> (usize, usize) {
-        todo!();
+    fn part_2_input(&self, input: &str) -> (usize, usize) {
+        let mut chamber = Chamber::new(7, input.chars().collect::<Vec<char>>(), 1_000_000_000_000);
+        let result = chamber.simulate(false, false, true);
+        (result, 0)
     }
 }

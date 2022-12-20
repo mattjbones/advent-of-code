@@ -78,7 +78,11 @@ fn main() {
     }
 }
 
-fn run_day<T: std::fmt::Display>((runner, path): &(Box<dyn Runner<T>>, String), selected: &str) {
+fn run_day<T>((runner, path): &(Box<dyn Runner<T>>, String), selected: &str)
+where
+    T: std::fmt::Display,
+    T: std::cmp::PartialEq,
+{
     let dir = env::current_dir().unwrap();
     let sample_path = format!("{}/src/day/{path}/sample", dir.display());
     let input_path = format!("{}/src/day/{path}/input", dir.display());
