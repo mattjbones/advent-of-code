@@ -38,6 +38,18 @@ fn main() {
             Box::new(day::seventeen::Seventeen {}) as Box<dyn Runner<_>>,
             "seventeen".to_string(),
         ),
+        (
+            Box::new(day::eighteen::Eighteen {}) as Box<dyn Runner<_>>,
+            "eighteen".to_string(),
+        ),
+        (
+            Box::new(day::nineteen::Nineteen {}) as Box<dyn Runner<_>>,
+            "nineteen".to_string(),
+        ),
+        (
+            Box::new(day::twenty::Twenty {}) as Box<dyn Runner<_>>,
+            "twenty".to_string(),
+        ),
     ]);
 
     let args = args().into_iter().collect::<Vec<String>>();

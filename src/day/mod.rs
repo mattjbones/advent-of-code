@@ -1,10 +1,12 @@
 pub mod eight;
+pub mod eighteen;
 pub mod eleven;
 pub mod fifteen;
 pub mod five;
 pub mod four;
 pub mod fourteen;
 pub mod nine;
+pub mod nineteen;
 pub mod one;
 pub mod seven;
 pub mod seventeen;
@@ -14,4 +16,5 @@ pub mod ten;
 pub mod thirteen;
 pub mod three;
 pub mod twelve;
+pub mod twenty;
 pub mod two;
