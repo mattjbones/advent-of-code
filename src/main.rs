@@ -3,6 +3,7 @@
 use std::{env, env::args, fs, process::exit};
 
 use crate::runner::Runner;
+extern crate regex;
 
 pub mod day;
 pub mod runner;
@@ -49,6 +50,14 @@ fn main() {
         (
             Box::new(day::twenty::Twenty {}) as Box<dyn Runner<_>>,
             "twenty".to_string(),
+        ),
+        (
+            Box::new(day::twenty_one::TwentyOne {}) as Box<dyn Runner<_>>,
+            "twenty_one".to_string(),
+        ),
+        (
+            Box::new(day::twenty_two::TwentyTwo {}) as Box<dyn Runner<_>>,
+            "twenty_two".to_string(),
         ),
     ]);
 
