@@ -73,7 +73,10 @@
     "iterator": "cpp",
     "memory_resource": "cpp"
   },
-  "editor.defaultFormatter": "ms-vscode.cpptools",
+  "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
   "editor.formatOnSave": true,
-  "C_Cpp.default.cppStandard": "gnu++20"
+  "C_Cpp.default.cppStandard": "gnu++20",
+  "[cpp]": {
+    "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
+  }
 }

@@ -8,7 +8,6 @@ Two::Two(filesystem::path targetPath, int part_1, int part_2)
 
 void Two::part_1(problem_lines lines, int expected)
 {
-    print_line("Day Two: Part 1");
     TwoImpl two;
     auto result = two.part_1(lines);
     cout << "Result: ";
@@ -23,7 +22,6 @@ void Two::part_1(problem_lines lines, int expected)
 
 void Two::part_2(problem_lines lines, int expected)
 {
-    print_line("Day Two: Part 2");
     TwoImpl two;
     auto result = two.part_2(lines);
     cout << "Result: ";

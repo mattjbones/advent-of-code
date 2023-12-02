@@ -12,6 +12,7 @@ using problem_lines = vector<string>*;
 
 class IRunner {
 public:
+    virtual ~IRunner() = default;
     virtual void part_1(problem_lines lines, int expected) = 0;
     virtual void part_2(problem_lines lines, int expected) = 0;
 };

@@ -11,20 +11,20 @@ int OneImpl::part_1(problem_lines ptr_lines)
 {
     vector<int> answers;
 
-    vector<string> lines = *ptr_lines;
-    for (string line : lines) {
+    const vector<string> lines = *ptr_lines;
+    for (const string& line : lines) {
         // print_line(line);
         string number_parts;
 
-        for (char character : line) {
+        for (const char& character : line) {
             try {
-                int number = std::stoi(&character);
+                const int number = std::stoi(&character);
                 if (number_parts.length() == 0 || number_parts.length() == 1) {
                     number_parts += character;
                 } else {
                     number_parts.at(1) = character;
                 }
-            } catch (std::invalid_argument _) {
+            } catch (std::invalid_argument& _) {
                 continue;
             }
         }
@@ -42,9 +42,10 @@ int OneImpl::part_1(problem_lines ptr_lines)
 int OneImpl::part_2(problem_lines ptr_lines)
 {
     const vector<string> numbers = { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
-    std::regex numberOrWord("([1-9]|one|two|three|four|five|six|seven|eight|nine)", std::regex_constants::ECMAScript);
+    const std::regex numberOrWord(
+        "([1-9]|one|two|three|four|five|six|seven|eight|nine)", std::regex_constants::ECMAScript);
     vector<int> answers;
-    for (string line : *ptr_lines) {
+    for (const string& line : *ptr_lines) {
         // print_line(line);
 
         string number_parts;
@@ -53,13 +54,13 @@ int OneImpl::part_2(problem_lines ptr_lines)
         while (std::regex_search(search, matches, numberOrWord)) {
             auto match = matches[1].str();
             auto number_string_index = std::find(numbers.begin(), numbers.end(), match);
-            string prefix = "";
+            string prefix;
             if (number_string_index != numbers.end()) {
                 prefix = match.substr(1, match.length() - 1);
                 match = std::to_string(number_string_index - numbers.begin() + 1);
             }
 
-            if (number_parts.size() == 0 || number_parts.size() == 1) {
+            if (number_parts.empty() || number_parts.size() == 1) {
                 number_parts += match;
             } else {
                 number_parts.at(1) = match.at(0);
