@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <numeric>
 #include <format>
+#include <regex>
 
 using namespace std;
 
@@ -79,89 +80,46 @@ public:
 
 	int part_2(problem_lines ptr_lines)
 	{
-		const string number_string = "|one|two|three|four|five|six|seven|eight|nine";
-		const string number_indexes[] = {
-				"one",
-				"two",
-				"three",
-				"four",
-				"five",
-				"six",
-				"seven",
-				"eight",
-				"nine",
-		};
-		int size_of_indexes = 9;
-
+		const vector<string> numbers = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
+		std::regex numberOrWord("([1-9]|one|two|three|four|five|six|seven|eight|nine)", std::regex_constants::ECMAScript);
 		vector<int> answers;
-
-		vector<string> lines = *ptr_lines;
-		for (string line : lines)
+		for (string line : *ptr_lines)
 		{
 			// print_line(line);
-			string number_parts;
-			string spelled_number_parts;
 
-			for (char character : line)
+			string number_parts;
+			std::smatch matches;
+			string search(line);
+			while (std::regex_search(search, matches, numberOrWord))
 			{
-				try
+				auto match = matches[1].str();
+				auto number_string_index = std::find(numbers.begin(), numbers.end(), match);
+				string prefix = "";
+				if (number_string_index != numbers.end())
 				{
-					int number = std::stoi(&character);
-					if (number_parts.length() == 0 || number_parts.length() == 1)
-					{
-						number_parts += character;
-					}
-					else
-					{
-						number_parts.at(1) = character;
-					}
-					spelled_number_parts = "";
+					prefix = match.substr(1, match.length() - 1);
+					match = std::to_string(number_string_index - numbers.begin() + 1);
 				}
-				catch (std::invalid_argument _)
+
+				if (number_parts.size() == 0 || number_parts.size() == 1)
 				{
-					spelled_number_parts += character;
-					print_line(spelled_number_parts);
-					if (number_string.find("|" + spelled_number_parts) != std::string::npos)
-					{
-						for (int i = 0; i < size_of_indexes; i++)
-						{
-							if (number_indexes[i] == spelled_number_parts)
-							{
-								if (number_parts.length() == 0 || number_parts.length() == 1)
-								{
-									number_parts += to_string(i + 1);
-								}
-								else
-								{
-									number_parts.at(1) = to_string(i + 1).at(0);
-								}
-								print_line(spelled_number_parts);
-								print_char(character);
-								string possible_start("|");
-								possible_start += character;
-								if (number_string.find(possible_start) != std::string::npos)
-								{
-									spelled_number_parts = character;
-								}
-								break;
-							}
-						}
-					}
-					else
-					{
-						spelled_number_parts = character;
-					}
+					number_parts += match;
 				}
+				else
+				{
+					number_parts.at(1) = match.at(0);
+				}
+				search = prefix + "" + matches.suffix().str();
 			}
 
 			if (number_parts.length() == 1)
 			{
 				number_parts += number_parts;
 			}
-			cout << "Line: ";
-			cout << line;
-			cout << " parts: ";
-			cout << number_parts << endl;
+			// cout << "Line: ";
+			// cout << line;
+			// cout << " parts: ";
+			// cout << number_parts << endl;
 			answers.push_back(std::stoi(number_parts));
 		}
 
@@ -265,12 +223,12 @@ int main()
 	filesystem::path day_one_path_2_sample = filesystem::path(day_one.path) += filesystem::path("part_2/sample");
 	vector<string> sample_data_2 = read_file_path(day_one_path_2_sample);
 
-	// vector<string> dummy_vec({"honemkmbfbnlhtbq19twonekbp", "twone", "threeight", "four444ninine", "fiveight", "six", "sevenine", "eightwo", "nineightwone"});
-	vector<string> dummy_vec({"four444ninine"});
-	day_one.part_2_sample(&dummy_vec, 49);
+	vector<string> dummy_vec({"honemkmbfbnlhtbq19twonekbp", "twone", "threeight", "four444ninine", "fiveight", "six", "sevenine", "eightwo", "nineightwone"});
+	// vector<string> dummy_vec({"four444ninine"});
+	day_one.part_2_sample(&dummy_vec, 495);
 
-	// day_one.part_2_sample(&sample_data_2, 281);
-	// day_one.part_2_input(&input_data);
+	day_one.part_2_sample(&sample_data_2, 281);
+	day_one.part_2_input(&input_data);
 }
 
 void print_line(string line)
