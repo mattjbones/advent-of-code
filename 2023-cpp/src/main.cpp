@@ -23,13 +23,14 @@ int main()
 
     One day_one(filesystem::path("./src/days/one/"), 54331, 54518);
     Two day_two(filesystem::path("./src/days/two/"), 2720, 71535);
-    Three day_three(filesystem::path("./src/days/three/"), 0, 0);
+    Three day_three(filesystem::path("./src/days/three/"), 544664, 84495585);
 
     vector<RunnerBase*> days = { &day_one, &day_two, &day_three };
 
     // run samples
     print_line("Running sample data");
     run_input_part_1(&day_three, 4361, "data/sample_1");
+    run_input_part_2(&day_three, 467835, "data/sample_1");
 
     run_input_part_1(&day_two, 8, "data/sample_1");
     run_input_part_2(&day_two, 2286, "data/sample_1");
@@ -45,6 +46,8 @@ int main()
         run_input(day);
         ++day_number;
     });
+
+    print_line("\tEverything is correct! 🔥\n\n");
 }
 
 void run_input_part_1(RunnerBase* day, int expected, vector<string> data) { day->part_1(&data, expected); }
