@@ -1,4 +1,4 @@
-#include "../../logging.hpp"
+#include "../../logging.tcc"
 #include "../../runner.hpp"
 
 using namespace std;

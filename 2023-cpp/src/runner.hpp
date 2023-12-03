@@ -19,8 +19,6 @@ public:
 
 class RunnerBase : public IRunner {
 public:
-    void part_1(problem_lines lines, int expected) {};
-    void part_2(problem_lines lines, int expected) {};
     RunnerBase(filesystem::path data_path, int part_1, int part_2)
     {
         part_1_expected = part_1;
@@ -33,6 +31,6 @@ public:
     int part_2_expected;
 };
 
-vector<string> read_file_path(filesystem::path path);
+vector<string> read_file_path(const filesystem::path& path);
 
 #endif //__RUNNER_H_INCLUDED

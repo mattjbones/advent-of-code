@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include "../../logging.hpp"
+#include "../../logging.tcc"
 
 #include "two.hpp"
 

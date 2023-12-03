@@ -2,10 +2,11 @@
 #include <iostream>
 #include <string>
 
-#include "logging.hpp"
+#include "logging.tcc"
 #include "runner.hpp"
 
 #include "days/one/one_runner.hpp"
+#include "days/three/three_runner.hpp"
 #include "days/two/two_runner.hpp"
 
 using namespace std;
@@ -18,21 +19,23 @@ void run_input_part_2(RunnerBase* day, int expected, vector<string> data);
 
 int main()
 {
-    cout << "Advent of Code 2023!" << endl;
-    cout << endl;
+    print_line("Advent of Code 2023!");
 
     One day_one(filesystem::path("./src/days/one/"), 54331, 54518);
     Two day_two(filesystem::path("./src/days/two/"), 2720, 71535);
+    Three day_three(filesystem::path("./src/days/three/"), 0, 0);
 
-    vector<RunnerBase*> days = { &day_one, &day_two };
+    vector<RunnerBase*> days = { &day_one, &day_two, &day_three };
 
     // run samples
     print_line("Running sample data");
-    run_input_part_1(&day_one, 142, "data/sample_1");
-    run_input_part_2(&day_one, 281, "data/sample_2");
+    run_input_part_1(&day_three, 4361, "data/sample_1");
 
     run_input_part_1(&day_two, 8, "data/sample_1");
     run_input_part_2(&day_two, 2286, "data/sample_1");
+
+    run_input_part_1(&day_one, 142, "data/sample_1");
+    run_input_part_2(&day_one, 281, "data/sample_2");
 
     // run input
     print_line("Running input data");
