@@ -4,33 +4,17 @@
 
 using namespace std;
 
-Three::Three(filesystem::path targetPath, int part_1, int part_2)
-    : RunnerBase(std::move(targetPath), part_1, part_2) {};
+Three::Three(filesystem::path targetPath, int part_1, int part_2, const char* day)
+    : RunnerBase(std::move(targetPath), part_1, part_2, day) {};
 
-void Three::part_1(problem_lines lines, int expected)
+int Three::get_part_1_result(problem_lines lines)
 {
     ThreeImpl three;
-    auto result = three.part_1(lines);
-    cout << "Result: ";
-    cout << result << endl;
-    if (result != expected) {
-        print_error("Failed");
-        exit(1);
-    }
-    cout << "Correct!" << endl;
-    cout << endl;
-};
+    return three.part_1(lines);
+}
 
-void Three::part_2(problem_lines lines, int expected)
+int Three::get_part_2_result(problem_lines lines)
 {
     ThreeImpl three;
-    auto result = three.part_2(lines);
-    cout << "Result: ";
-    cout << result << endl;
-    if (result != expected) {
-        print_error("Failed");
-        exit(1);
-    }
-    cout << "Correct!" << endl;
-    cout << endl;
-};
+    return three.part_2(lines);
+}

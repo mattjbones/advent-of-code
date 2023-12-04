@@ -3,33 +3,17 @@
 
 using namespace std;
 
-Two::Two(filesystem::path targetPath, int part_1, int part_2)
-    : RunnerBase(targetPath, part_1, part_2) {};
+Two::Two(filesystem::path targetPath, int part_1, int part_2, const char* day)
+    : RunnerBase(std::move(targetPath), part_1, part_2, day) {};
 
-void Two::part_1(problem_lines lines, int expected)
+int Two::get_part_1_result(problem_lines ptr_lines)
 {
     TwoImpl two;
-    auto result = two.part_1(lines);
-    cout << "Result: ";
-    cout << result << endl;
-    if (result != expected) {
-        print_error("Failed");
-        exit(1);
-    }
-    cout << "Correct!" << endl;
-    cout << endl;
-};
+    return two.part_1(ptr_lines);
+}
 
-void Two::part_2(problem_lines lines, int expected)
+int Two::get_part_2_result(problem_lines ptr_lines)
 {
     TwoImpl two;
-    auto result = two.part_2(lines);
-    cout << "Result: ";
-    cout << result << endl;
-    if (result != expected) {
-        print_error("Failed");
-        exit(1);
-    }
-    cout << "Correct!" << endl;
-    cout << endl;
-};
+    return two.part_2(ptr_lines);
+}

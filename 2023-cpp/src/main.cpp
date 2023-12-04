@@ -21,63 +21,31 @@ int main()
 {
     print_line("Advent of Code 2023!");
 
-    One day_one(filesystem::path("./src/days/one/"), 54331, 54518);
-    Two day_two(filesystem::path("./src/days/two/"), 2720, 71535);
-    Three day_three(filesystem::path("./src/days/three/"), 544664, 84495585);
+    One day_one(filesystem::path("./src/days/one/"), 54331, 54518, "One");
+    Two day_two(filesystem::path("./src/days/two/"), 2720, 71535, "Two");
+    Three day_three(filesystem::path("./src/days/three/"), 544664, 84495585, "Three");
 
     vector<RunnerBase*> days = { &day_one, &day_two, &day_three };
 
     // run samples
     print_line("Running sample data");
-    run_input_part_1(&day_three, 4361, "data/sample_1");
-    run_input_part_2(&day_three, 467835, "data/sample_1");
 
-    run_input_part_1(&day_two, 8, "data/sample_1");
-    run_input_part_2(&day_two, 2286, "data/sample_1");
+    day_three.run_input_part_1("data/sample_1", 4361);
+    day_three.run_input_part_2("data/sample_1", 467835);
 
-    run_input_part_1(&day_one, 142, "data/sample_1");
-    run_input_part_2(&day_one, 281, "data/sample_2");
+    day_two.run_input_part_1("data/sample_1", 8);
+    day_two.run_input_part_2("data/sample_1", 2286);
+
+    day_one.run_input_part_1("data/sample_1", 142);
+    day_one.run_input_part_2("data/sample_2", 281);
 
     // run input
-    print_line("Running input data");
-    int day_number = 1;
-    std::for_each(days.begin(), days.end(), [day_number](RunnerBase* day) mutable {
-        print_line("- Day " + to_string(day_number) + " -");
-        run_input(day);
-        ++day_number;
+    print_line("=== Running input data ===");
+    std::for_each(days.begin(), days.end(), [](RunnerBase* day) mutable {
+        print_line("- Day " + day->day_name + " -");
+        day->run_input_part_1();
+        day->run_input_part_2();
     });
 
     print_line("\tEverything is correct! 🔥\n\n");
-}
-
-void run_input_part_1(RunnerBase* day, int expected, vector<string> data) { day->part_1(&data, expected); }
-
-void run_input_part_2(RunnerBase* day, int expected, vector<string> data) { day->part_2(&data, expected); }
-
-void run_input_part_1(RunnerBase* day, int expected, string path_part)
-{
-    const filesystem::path path = filesystem::path(day->path) += filesystem::path(path_part);
-    vector<string> data = read_file_path(path);
-    print_line("Part 1");
-    day->part_1(&data, expected);
-}
-
-void run_input_part_2(RunnerBase* day, int expected, string path_part)
-{
-    const filesystem::path path = filesystem::path(day->path) += filesystem::path(path_part);
-    vector<string> data = read_file_path(path);
-    print_line("Part 2");
-    day->part_2(&data, expected);
-}
-
-void run_input(RunnerBase* day, string path_part)
-{
-    const filesystem::path path = filesystem::path(day->path) += filesystem::path(path_part);
-    vector<string> data = read_file_path(path);
-
-    print_line("Part 1");
-    day->part_1(&data, day->part_1_expected);
-
-    print_line("Part 2");
-    day->part_2(&data, day->part_2_expected);
 }
