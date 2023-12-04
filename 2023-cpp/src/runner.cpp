@@ -40,7 +40,7 @@ void RunnerBase::run_input_part_1(const char* target_data_path)
 
 void RunnerBase::run_input_part_1(const char* target_data_path, int expected)
 {
-    print_line("Part 1");
+    print_line("Day " + day_name + ": Part 1");
     auto data = get_input_lines(filesystem::path(target_data_path));
     auto result = get_part_1_result(&data);
     runner_result_expected(result, expected);
@@ -52,7 +52,7 @@ void RunnerBase::run_input_part_2(const char* target_data_path)
 }
 void RunnerBase::run_input_part_2(const char* target_data_path, int expected)
 {
-    print_line("Part 2");
+    print_line("Day " + day_name + ": Part 2");
     auto data = get_input_lines(filesystem::path(target_data_path));
     auto result = get_part_2_result(&data);
     runner_result_expected(result, expected);
@@ -60,10 +60,11 @@ void RunnerBase::run_input_part_2(const char* target_data_path, int expected)
 
 void RunnerBase::runner_result_expected(int result, int expected)
 {
-    cout << "Result: ";
+    cout << "  Result: ";
     cout << result << endl;
     if (result != expected) {
-        print_error("Failed");
+        print_error("   Expected: " + to_string(expected));
+        print_error("   Failed");
         exit(1);
     }
     cout << "Correct!" << endl;
@@ -73,5 +74,5 @@ void RunnerBase::runner_result_expected(int result, int expected)
 int RunnerBase::get_part_1_expected() { return part_1_expected; }
 int RunnerBase::get_part_2_expected() { return part_2_expected; }
 
-int RunnerBase::get_part_1_result(problem_lines) { throw std::logic_error("Not implemented"); }
-int RunnerBase::get_part_2_result(problem_lines) { throw std::logic_error("Not implemented"); }
+int RunnerBase::get_part_1_result(problem_lines) { throw std::logic_error("Please implement for each given day"); }
+int RunnerBase::get_part_2_result(problem_lines) { throw std::logic_error("Please implement for each given day"); }

@@ -1,3 +1,4 @@
+#pragma once
 #include "../../runner.hpp"
 
 using namespace std;
