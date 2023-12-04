@@ -25,7 +25,7 @@ int main()
     One day_one(filesystem::path("./src/days/one/"), 54331, 54518, "One");
     Two day_two(filesystem::path("./src/days/two/"), 2720, 71535, "Two");
     Three day_three(filesystem::path("./src/days/three/"), 544664, 84495585, "Three");
-    Four day_four(32001, -1);
+    Four day_four(32001, 5037841);
 
     vector<RunnerBase*> days = { &day_one, &day_two, &day_three, &day_four };
 

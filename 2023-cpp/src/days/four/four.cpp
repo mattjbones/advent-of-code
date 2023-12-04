@@ -136,22 +136,19 @@ std::vector<int> calculate_copy_count(vector<int>& matching_per_card)
 
     for (auto i = 0; i < matching_per_card.size(); ++i) {
         int matches = matching_per_card[i];
-        print_line("Matches (Card " + to_string(i + 1) + "): " + to_string(matches));
-        int current_card = i;
+        // print_line("Matches (Card " + to_string(i + 1) + "): " + to_string(matches));
+        int current_card = i + 1;
         while (current_card <= i + matches) {
-            print_line("current card: " + to_string(current_card + 1));
-            copy_counts.at(current_card) += matches;
-            // if (current_card > current_card + 1) {
-            //     copy_counts.at(current_card) += matches;
-            // }
+            // print_line("current card: " + to_string(current_card + 1));
+            copy_counts.at(current_card) += copy_counts.at(i);
             ++current_card;
         }
-        print_lines(&copy_counts, true);
-        print_line("");
+        // print_lines(&copy_counts, true);
+        // print_line("");
     }
 
-    print_line("Final copy Counts: ");
-    print_lines(&copy_counts, true);
+    // print_line("Final copy Counts: ");
+    // print_lines(&copy_counts, true);
 
     return copy_counts;
 }
