@@ -78,5 +78,6 @@
   "C_Cpp.default.cppStandard": "gnu++20",
   "[cpp]": {
     "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"
-  }
+  },
+  "cmake.sourceDirectory": "/Users/mbarnettjones/projects/advent_of_code/2023-cpp/build"
 }

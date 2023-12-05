@@ -1,3 +1,4 @@
+#include <chrono>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -9,6 +10,9 @@
 #include "runner.hpp"
 
 using namespace std;
+
+using Clock = std::chrono::steady_clock;
+using Second = std::chrono::duration<double, std::ratio<1>>;
 
 vector<string> read_file_path(const filesystem::path& path)
 {
@@ -42,7 +46,10 @@ void RunnerBase::run_input_part_1(const char* target_data_path, int expected)
 {
     print_line("Day " + day_name + ": Part 1");
     auto data = get_input_lines(filesystem::path(target_data_path));
+    std::chrono::time_point<Clock> m_beg { Clock::now() };
     auto result = get_part_1_result(&data);
+    auto time = std::chrono::duration_cast<Second>(Clock::now() - m_beg).count();
+    print_line("     time taken: " + to_string(time));
     runner_result_expected(result, expected);
 }
 
@@ -54,7 +61,10 @@ void RunnerBase::run_input_part_2(const char* target_data_path, int expected)
 {
     print_line("Day " + day_name + ": Part 2");
     auto data = get_input_lines(filesystem::path(target_data_path));
+    std::chrono::time_point<Clock> m_beg { Clock::now() };
     auto result = get_part_2_result(&data);
+    auto time = std::chrono::duration_cast<Second>(Clock::now() - m_beg).count();
+    print_line("     time taken: " + to_string(time));
     runner_result_expected(result, expected);
 }
 

@@ -5,18 +5,13 @@
 #include "logging.tcc"
 #include "runner.hpp"
 
+#include "days/five/five.hpp"
 #include "days/four/four.hpp"
 #include "days/one/one_runner.hpp"
 #include "days/three/three_runner.hpp"
 #include "days/two/two_runner.hpp"
 
 using namespace std;
-
-void run_input(RunnerBase* day, string path_part = "data/input");
-void run_input_part_1(RunnerBase* day, int expected, string path_part = "data/input");
-void run_input_part_2(RunnerBase* day, int expected, string path_part = "data/input");
-void run_input_part_1(RunnerBase* day, int expected, vector<string> data);
-void run_input_part_2(RunnerBase* day, int expected, vector<string> data);
 
 int main()
 {
@@ -26,11 +21,15 @@ int main()
     Two day_two(filesystem::path("./src/days/two/"), 2720, 71535, "Two");
     Three day_three(filesystem::path("./src/days/three/"), 544664, 84495585, "Three");
     Four day_four(32001, 5037841);
+    Five day_five(650599855);
 
-    vector<RunnerBase*> days = { &day_one, &day_two, &day_three, &day_four };
+    vector<RunnerBase*> days = { &day_one, &day_two, &day_three, &day_four, &day_five };
 
     // run samples
     print_line("Running sample data");
+
+    day_five.run_input_part_1("data/sample", 35);
+    day_five.run_input_part_2("data/sample", 46);
 
     day_four.run_input_part_1("data/sample_1", 13);
     day_four.run_input_part_2("data/sample_1", 30);
