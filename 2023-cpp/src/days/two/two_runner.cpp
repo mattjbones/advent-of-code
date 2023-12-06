@@ -4,7 +4,7 @@
 using namespace std;
 
 Two::Two(filesystem::path targetPath, int part_1, int part_2, const char* day)
-    : RunnerBase(std::move(targetPath), part_1, part_2, day) {};
+    : RunnerBase(std::move(targetPath), part_1, part_2, day, true) {};
 
 int Two::get_part_1_result(problem_lines ptr_lines)
 {
