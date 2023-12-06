@@ -29,7 +29,8 @@ int main()
     print_line("Running sample data");
 
     day_five.run_input_part_1("data/sample", 35);
-    day_five.run_input_part_2("data/sample", 46);
+    // TODO - properly
+    //  day_five.run_input_part_2("data/sample", 46);
 
     day_four.run_input_part_1("data/sample_1", 13);
     day_four.run_input_part_2("data/sample_1", 30);

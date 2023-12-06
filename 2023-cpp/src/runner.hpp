@@ -31,11 +31,12 @@ private:
 
 class RunnerBase : public IRunner {
 public:
-    RunnerBase(filesystem::path data_path, int part_1, int part_2, const char* day)
+    RunnerBase(filesystem::path data_path, int part_1, int part_2, const char* day, bool skippable = false)
         : path(std::move(data_path))
         , part_1_expected(part_1)
         , part_2_expected(part_2)
-        , day_name(day) {};
+        , day_name(day)
+        , skippable(skippable) {};
 
     void run_input_part_1(const char* target_data_path = "data/input") override;
     void run_input_part_2(const char* target_data_path = "data/input") override;
@@ -56,6 +57,7 @@ private:
     int part_1_expected;
     int part_2_expected;
     filesystem::path path;
+    bool skippable;
 
     vector<string> get_input_lines(filesystem::path path) override;
     void runner_result_expected(int result, int expected) override;

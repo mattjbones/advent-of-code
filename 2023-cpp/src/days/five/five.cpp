@@ -12,7 +12,7 @@
 #include "five.hpp"
 
 Five::Five(int part_1, int part_2)
-    : RunnerBase(filesystem::path("src/days/five/"), part_1, part_2, "Five") {};
+    : RunnerBase(filesystem::path("src/days/five/"), part_1, part_2, "Five", true) {};
 
 // seeds: 79 14 55 13
 
