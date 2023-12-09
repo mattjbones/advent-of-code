@@ -8,6 +8,7 @@
 #include "days/five/five.hpp"
 #include "days/four/four.hpp"
 #include "days/one/one_runner.hpp"
+#include "days/seven/seven.hpp"
 #include "days/six/six.hpp"
 #include "days/three/three_runner.hpp"
 #include "days/two/two_runner.hpp"
@@ -24,11 +25,14 @@ int main()
     Four day_four(32001, 5037841);
     Five day_five(650599855); // skipped
     Six day_six(2269432, 35865985);
+    Seven day_seven;
 
-    vector<RunnerBase*> days = { &day_one, &day_two, &day_three, &day_four, &day_five, &day_six };
+    vector<RunnerBase*> days = { &day_one, &day_two, &day_three, &day_four, &day_five, &day_six, &day_seven };
 
     // run samples
     print_line("Running sample data");
+
+    day_seven.run_input_part_1("data/sample", 6440);
 
     day_six.run_input_part_1("data/sample", 288);
     day_six.run_input_part_2("data/sample", 71503);

@@ -72,7 +72,7 @@ void RunnerBase::run_input_part_2(const char* target_data_path, int expected)
     std::chrono::time_point<Clock> m_beg { Clock::now() };
     auto result = get_part_2_result(&data);
     auto time = std::chrono::duration_cast<Second>(Clock::now() - m_beg).count();
-    print_line("     time taken: " + to_string(time));
+    print_line("     Time taken: " + to_string(time));
     runner_result_expected(result, expected);
 }
 
