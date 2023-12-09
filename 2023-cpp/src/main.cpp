@@ -5,6 +5,7 @@
 #include "logging.tcc"
 #include "runner.hpp"
 
+#include "days/eight/eight.hpp"
 #include "days/five/five.hpp"
 #include "days/four/four.hpp"
 #include "days/one/one_runner.hpp"
@@ -26,11 +27,16 @@ int main()
     Five day_five(650599855); // skipped
     Six day_six(2269432, 35865985);
     Seven day_seven(251927063, 255632664);
+    Eight day_eight(16531);
 
-    vector<RunnerBase*> days = { &day_one, &day_two, &day_three, &day_four, &day_five, &day_six, &day_seven };
+    vector<RunnerBase*> days
+        = { &day_one, &day_two, &day_three, &day_four, &day_five, &day_six, &day_seven, &day_eight };
 
     // run samples
     print_line("Running sample data");
+
+    day_eight.run_input_part_1("data/sample", 6);
+    // day_eight.run_input_part_2("data/sample", 6);
 
     day_seven.run_input_part_1("data/sample", 6440);
     day_seven.run_input_part_2("data/sample", 5905);
@@ -57,7 +63,7 @@ int main()
 
     // run input
     print_line("=== Running input data ===");
-    std::for_each(days.begin(), days.end(), [](RunnerBase* day) mutable {
+    std::for_each(days.begin(), days.end(), [](RunnerBase* day) {
         day->run_input_part_1();
         day->run_input_part_2();
     });

@@ -50,10 +50,10 @@ void RunnerBase::run_input_part_1(const char* target_data_path, int expected)
 {
     print_line("Day " + day_name + ": Part 1");
     auto data = get_input_lines(filesystem::path(target_data_path));
-    std::chrono::time_point<Clock> m_beg { Clock::now() };
+    const std::chrono::time_point<Clock> m_beg { Clock::now() };
     auto result = get_part_1_result(&data);
     auto time = std::chrono::duration_cast<Second>(Clock::now() - m_beg).count();
-    print_line("     time taken: " + to_string(time));
+    print_line("     Time taken: " + to_string(time));
     runner_result_expected(result, expected);
 }
 
@@ -69,7 +69,7 @@ void RunnerBase::run_input_part_2(const char* target_data_path, int expected)
 {
     print_line("Day " + day_name + ": Part 2");
     auto data = get_input_lines(filesystem::path(target_data_path));
-    std::chrono::time_point<Clock> m_beg { Clock::now() };
+    const std::chrono::time_point<Clock> m_beg { Clock::now() };
     auto result = get_part_2_result(&data);
     auto time = std::chrono::duration_cast<Second>(Clock::now() - m_beg).count();
     print_line("     Time taken: " + to_string(time));
