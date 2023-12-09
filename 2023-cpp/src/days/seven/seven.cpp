@@ -1,6 +1,7 @@
 #include <__tuple_dir/tuple_element.h>
 #include <algorithm>
 #include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/find.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <cstdlib>
 #include <exception>
@@ -235,4 +236,184 @@ int Seven::get_part_1_result(problem_lines ptr_lines)
     return score_games(games);
 };
 
-int Seven::get_part_2_result(problem_lines) { return 0; };
+Hand parse_cards_for_hand_part_2(std::map<Svn2::Card, int>& hand, std::vector<Svn2::Card>& ordered)
+{
+    Hand hand_value = Hand::HighCard;
+    auto card = hand.begin();
+    auto hasJoker = contains(ordered, Svn2::Joker);
+
+    switch (hand.size()) {
+    case 1: {
+        hand_value = Hand::FiveOfAKind;
+        break;
+    }
+
+    case 2: {
+        auto second_card = std::next(hand.begin(), 1);
+        if (hasJoker) {
+            hand_value = Hand::FiveOfAKind;
+        } else if (card->second == 4 || second_card->second == 4) {
+            hand_value = Hand::FourOfAKind;
+        } else if (card->second == 3 || second_card->second == 3) {
+            hand_value = Hand::FullHouse;
+        }
+        break;
+    }
+
+    case 3: {
+        auto second_card = std::next(hand.begin(), 1);
+        auto third_card = std::next(hand.begin(), 2);
+        auto counts = { card->second, second_card->second, third_card->second };
+
+        std::vector<int> only_two;
+        std::copy_if(counts.begin(), counts.end(), std::back_inserter(only_two), is_two);
+        if (card->second == 3 || second_card->second == 3 || third_card->second == 3) {
+            hand_value = hasJoker ? Hand::FourOfAKind : Hand::ThreeOfAKind;
+        } else if (only_two.size() == 2) {
+            if (hasJoker) {
+                auto hasPairOfJoker = hand.at(Svn2::Joker) == 2;
+                hand_value = hasPairOfJoker ? Hand::FourOfAKind : Hand::FullHouse;
+            } else {
+                hand_value = Hand::TwoPair;
+            }
+        }
+    }
+
+    case 4: {
+        auto second_card = std::next(hand.begin(), 1);
+        auto third_card = std::next(hand.begin(), 2);
+        auto fourth = std::next(hand.begin(), 3);
+        std::vector<int> counts = { card->second, second_card->second, third_card->second, fourth->second };
+
+        std::vector<int> only_two;
+        std::copy_if(counts.begin(), counts.end(), std::back_inserter(only_two), is_two);
+        if (only_two.size() == 1) {
+            hand_value = hasJoker ? Hand::ThreeOfAKind : Hand::OnePair;
+        }
+        break;
+    }
+    case 5: {
+        hand_value = hasJoker ? Hand::OnePair : Hand::HighCard;
+        break;
+    }
+    }
+
+    return hand_value;
+}
+
+std::vector<Svn2::Game> Seven::parse_input_for_games_part_2(problem_lines ptr_lines)
+{
+    std::vector<Svn2::Game> games;
+
+    std::for_each(ptr_lines->begin(), ptr_lines->end(), [&games](auto& line) {
+        Svn2::Game game;
+        std::map<Svn2::Card, int> hand;
+        std::vector<string> parts;
+        std::vector<Svn2::Card> ordered_hand;
+        boost::split(parts, line, boost::is_any_of(" "));
+
+        for (const char character : parts[0]) {
+            const Svn2::Card card = Svn2::CARD_MAP.at(character);
+            ordered_hand.push_back(card);
+            if (hand.contains(card)) {
+                hand.at(card)++;
+            } else {
+                hand.insert({ card, 1 });
+            }
+            if (game.high_card < card) {
+                game.high_card = card;
+            }
+        }
+
+        game.hand_value = parse_cards_for_hand_part_2(hand, ordered_hand);
+        game.stake = std::stoi(parts[1]);
+        game.hand_string = parts[0];
+        game.ordered_hand = ordered_hand;
+        games.push_back(game);
+
+        // print_line("hand_value", game.hand_value);
+        // print_line("hand", parts[0]);
+        // print_line("");
+    });
+
+    return games;
+}
+
+bool compare_games_part_2(Svn2::Game& one, Svn2::Game& two)
+{
+    // print_line("");
+    // print_line(one.hand_string, two.hand_string);
+    // print_line(get_hand_name(one.hand_value), get_hand_name(two.hand_value));
+
+    if (one.hand_value != two.hand_value) {
+        return one.hand_value < two.hand_value;
+    }
+
+    // print_line("Evens");
+    auto one_one = one.ordered_hand.front();
+    auto two_one = two.ordered_hand.front();
+    // print_line("compare one");
+    // print_line("one_one", one_one + 2);
+    // print_line("two_one", two_one + 2);
+
+    if (one_one != two_one) {
+        return one_one < two_one;
+    }
+
+    auto one_two = *std::next(one.ordered_hand.begin(), 1);
+    auto two_two = *std::next(two.ordered_hand.begin(), 1);
+    // print_line("compare two");
+    // print_line("one_two", one_two + 2);
+    // print_line("two_two", two_two + 2);
+
+    if (one_two != two_two) {
+        return one_two < two_two;
+    }
+
+    // print_line("compare three");
+    auto one_three = *std::next(one.ordered_hand.begin(), 2);
+    auto two_three = *std::next(two.ordered_hand.begin(), 2);
+    if (one_three != two_three) {
+        return one_three < two_three;
+    }
+
+    // print_line("compare four");
+    auto one_four = *std::next(one.ordered_hand.begin(), 3);
+    auto two_four = *std::next(two.ordered_hand.begin(), 3);
+    if (one_four != two_four) {
+        return one_four < two_four;
+    }
+
+    // print_line("compare five");
+    auto one_five = *std::next(one.ordered_hand.begin(), 4);
+    auto two_five = *std::next(two.ordered_hand.begin(), 4);
+    if (one_five != two_five) {
+        return one_five < two_five;
+    }
+
+    return false;
+}
+
+int score_games(std::vector<Svn2::Game>& sorted_games)
+{
+    // print_line("Scoring");
+    int score = 0;
+    for (int i = 0; i < sorted_games.size(); i++) {
+        // print_line(i, sorted_games[i].stake);
+        score += sorted_games[i].stake * (i + 1);
+    }
+    return score;
+}
+
+int Seven::get_part_2_result(problem_lines ptr_lines)
+{
+    auto games = parse_input_for_games_part_2(ptr_lines);
+    std::sort(games.begin(), games.end(), compare_games_part_2);
+
+    // std::for_each(games.begin(), games.end(), [&games](Svn2::Game& game) {
+    //     print_line(get_hand_name(game.hand_value), game.hand_string);
+    //     std::for_each(game.ordered_hand.begin(), game.ordered_hand.end(), [](auto& sorted) { print_line(sorted + 2);
+    //     });
+    // });
+    return score_games(games);
+};

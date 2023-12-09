@@ -25,7 +25,7 @@ int main()
     Four day_four(32001, 5037841);
     Five day_five(650599855); // skipped
     Six day_six(2269432, 35865985);
-    Seven day_seven(251927063);
+    Seven day_seven(251927063, 255632664);
 
     vector<RunnerBase*> days = { &day_one, &day_two, &day_three, &day_four, &day_five, &day_six, &day_seven };
 
@@ -33,7 +33,7 @@ int main()
     print_line("Running sample data");
 
     day_seven.run_input_part_1("data/sample", 6440);
-    // day_seven.run_input_part_2("data/sample", 5905);
+    day_seven.run_input_part_2("data/sample", 5905);
 
     day_six.run_input_part_1("data/sample", 288);
     day_six.run_input_part_2("data/sample", 71503);
