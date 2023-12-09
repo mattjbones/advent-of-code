@@ -28,8 +28,7 @@ const std::map<char, Card> CARD_MAP {
 };
 
 struct Game {
-    std::map<Card, int> hand;
-    std::vector<pair<Card, int>> sorted;
+    std::vector<Card> ordered_hand;
     int stake = 0;
     Hand hand_value;
     Card high_card = Card::Two;

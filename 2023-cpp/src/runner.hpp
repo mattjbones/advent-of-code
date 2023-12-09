@@ -44,8 +44,6 @@ public:
     void run_input_part_1(const char*, int) override;
     void run_input_part_2(const char*, int) override;
 
-    string day_name;
-
 protected:
     int get_part_1_result(problem_lines) override;
     int get_part_2_result(problem_lines) override;
@@ -58,6 +56,7 @@ private:
     int part_2_expected;
     filesystem::path path;
     bool skippable;
+    string day_name;
 
     vector<string> get_input_lines(filesystem::path path) override;
     void runner_result_expected(int result, int expected) override;
