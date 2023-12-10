@@ -40,7 +40,7 @@ vector<string> RunnerBase::get_input_lines(filesystem::path data_path)
 void RunnerBase::run_input_part_1(const char* target_data_path)
 {
     if (skippable) {
-        print_line("* Skipping Day " + day_name + " part 2\n");
+        print_line("* Skipping Day " + day_name + " part 1\n");
         return;
     }
     run_input_part_1(target_data_path, get_part_1_expected());

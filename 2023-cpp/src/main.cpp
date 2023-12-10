@@ -36,7 +36,8 @@ int main()
     print_line("Running sample data");
 
     day_eight.run_input_part_1("data/sample", 6);
-    // day_eight.run_input_part_2("data/sample", 6);
+    day_eight.run_input_part_2("data/sample_2", 6);
+    day_eight.run_input_part_2("data/input");
 
     day_seven.run_input_part_1("data/sample", 6440);
     day_seven.run_input_part_2("data/sample", 5905);
