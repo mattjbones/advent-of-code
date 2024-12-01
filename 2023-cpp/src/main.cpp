@@ -12,6 +12,7 @@
 #include "days/one/one_runner.hpp"
 #include "days/seven/seven.hpp"
 #include "days/six/six.hpp"
+#include "days/ten/ten.hpp"
 #include "days/three/three_runner.hpp"
 #include "days/two/two_runner.hpp"
 
@@ -30,12 +31,16 @@ int main()
     Seven day_seven(251927063, 255632664);
     Eight day_eight(16531);
     Nine day_nine(1757008019, 995);
+    Ten day_ten;
 
-    vector<RunnerBase*> days
-        = { &day_one, &day_two, &day_three, &day_four, &day_five, &day_six, &day_seven, &day_eight, &day_nine };
+    vector<RunnerBase*> days = { &day_one, &day_two, &day_three, &day_four, &day_five, &day_six, &day_seven, &day_eight,
+        &day_nine, &day_ten };
 
     // run samples
     print_line("Running sample data");
+
+    day_ten.run_input_part_1("data/sample", 4);
+    day_ten.run_input_part_1("data/sample_1", 8);
 
     day_nine.run_input_part_1("data/sample", 114);
     day_nine.run_input_part_2("data/sample", 2);
