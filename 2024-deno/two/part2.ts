@@ -1,38 +1,38 @@
 const data = await Deno.readTextFile("./input");
 
-function checkSafety(levels: Array<number>): [boolean, Array<number>] {
-
-    let current = 0;
-    const failed = []
-    while(current < levels.length - 1){
-      const now = levels[current]
-      const next = levels[current + 1];
-
-      const diff = Math.abs(now - next);
-      const isRightDiff = diff === 1 || diff === 2 || diff === 3;
-      const isRightDir = levels[0] > levels[1] && now > next || levels[0] < levels[1] && now < next;
-
-      if(!isRightDiff || !isRightDir){
-        failed.push(current);
-      }
-      current++;
-    }
-
-    return [failed.length === 0, failed]
-}
-
 console.log(
   data.split("\n").filter((report) => {
+
+
+    const calc = (levels: number[]): [boolean, number[]]=>{
+      const diffs = [];
+      for(let i = 0; i < levels.length - 1; i++){
+        diffs.push(levels[i] - levels[i+1])
+      }
+  
+      const isIncreasing = diffs.every((val) => val <= 0);
+      const isDecreasing = diffs.every((val) => val >= 0);
+      const hasValidGap = !diffs.some((val)=> val === 0 || val > 3 || val < -3 );
+  
+      return [(isIncreasing || isDecreasing) && hasValidGap, diffs]
+    }
+
     const levels = report.split(" ").map((val) => parseInt(val, 10));
+    const [safe, ] = calc(levels);
+     
+    if (safe){
+      return true
+    }
 
-    if(!levels.length) return false;
+    for(let i = 0; i< levels.length; i ++){
+      const [safe, ] = calc(levels.toSpliced(i,1));
 
-    const [safe, failures ] = checkSafety(levels);
+      if(safe){
+        return true
+      }
+    }
 
-    const safeWithRemovals = !safe && failures.map((failedIndex)=>checkSafety([...levels].toSpliced(failedIndex, 1))).some(([val,]) => val);
+    return false;
 
-
-    return safe || safeWithRemovals
-
-  }).length
+  }).length,
 );
