@@ -1,0 +1,16 @@
+{
+  "version": "4",
+  "specifiers": {
+    "jsr:@izure/coord-matrix2d@^1.6.2": "1.6.2"
+  },
+  "jsr": {
+    "@izure/coord-matrix2d@1.6.2": {
+      "integrity": "35c173a1e6b8e1a8007cc33b88272a188554c3d784fe3ebf555b0c7bdbb079cd"
+    }
+  },
+  "workspace": {
+    "dependencies": [
+      "jsr:@izure/coord-matrix2d@^1.6.2"
+    ]
+  }
+}

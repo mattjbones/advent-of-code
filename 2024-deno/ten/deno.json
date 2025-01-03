@@ -1,0 +1,5 @@
+{
+  "imports": {
+    "@izure/coord-matrix2d": "jsr:@izure/coord-matrix2d@^1.6.2"
+  }
+}
